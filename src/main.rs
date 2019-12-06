@@ -2,9 +2,10 @@ winrt::import!(
     dependencies
         "os"
     modules
-        "windows.storage"
-        "windows.ui.composition"
-        "windows.ui.xaml.controls"
+        // "windows.storage"
+        // "windows.ui.composition"
+        // "windows.ui.xaml.controls"
+        "windows.foundation"
 );
 
 fn main() -> winrt::Result<()> {
