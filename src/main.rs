@@ -8,7 +8,7 @@ winrt::import!(
         "http://some-url-pointing-to-zip-file-containing-winmd-files"
         "https://www.nuget.org/api/v2/package/Win2D.uwp/1.24.0"
         "https://www.nuget.org/api/v2/package/Microsoft.Windows.SDK.Contracts/10.0.18362.2005"
-    modules // omit this to get everything
+    modules
         "kittens"
         "windows.storage"
         "windows.ui.composition"
