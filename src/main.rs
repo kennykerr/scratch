@@ -4,6 +4,8 @@ winrt::import!(
     modules
         "windows.storage"
         "windows.ui.composition"
+        "windows.ui.xaml.controls"
+        "fake.namespace"
 );
 
 fn main() -> winrt::Result<()> {
