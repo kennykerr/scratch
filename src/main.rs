@@ -34,8 +34,10 @@ winrt::import!(
 
      let ns = reader.find_namespace_lowercase("windows.foundation").unwrap();
 
-    for t in ns.enums() {
-        println!("{}", t.name().unwrap());
+     println!("ns {}", ns.full_name());
+
+    for t in ns.interfaces() {
+        println!("type {}", t.name().unwrap());
     }
 
  }
