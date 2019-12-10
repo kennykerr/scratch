@@ -4,6 +4,9 @@ winrt::import!(
     modules
         "windows.foundation"
         "windows.ui.xaml.controls"
+        "windows.ui.composition"
+        "windows.ui.composition"
+        "windows.ui"
 );
 
 // fn main() -> winrt::Result<()> {
@@ -25,11 +28,14 @@ winrt::import!(
 // }
 
  fn main() {
-    //  let reader = winmd::Reader::from_os().unwrap();
 
-    // let ns = reader.find_namespace_lowercase("windows.ui.composition").unwrap();
+    let reader = winmd::Reader::from_os().unwrap();
 
-    // println!("{}", ns.full_name());
+     let ns = reader.find_namespace_lowercase("windows.foundation").unwrap();
+
+    for t in ns.enums() {
+        println!("{}", t.name().unwrap());
+    }
 
  }
 //     let namespaces = reader.namespaces();
