@@ -25,7 +25,7 @@ fn main() {
 
     let namespaces = reader.namespaces();
 
-    for ns in namespaces {
+    for ns in namespaces.iter() {
         println!("namespace {}", ns.name());
 
         for ns in ns.namespaces() {
@@ -34,7 +34,12 @@ fn main() {
             for ns in ns.namespaces() {
                 println!("    namespace {}", ns.name());
             }
-   
         }
     }
+
+    let ns = reader.find_namespace("Windows.UI.Composition").unwrap();
+    println!("{}", ns.name());
+
+    let t = reader.find_type("Windows.Foundation.IStringable").unwrap();
+    println!("{}", t.name().unwrap());
 }
