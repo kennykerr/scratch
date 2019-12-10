@@ -7,6 +7,7 @@ winrt::import!(
         "windows.ui.composition"
         "windows.ui.composition"
         "windows.ui"
+        "windows.storage"
 );
 
 // fn main() -> winrt::Result<()> {
