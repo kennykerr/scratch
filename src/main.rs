@@ -2,12 +2,12 @@ winrt::import!(
     dependencies
         "os"
     modules
-        "windows.foundation"
-        "windows.ui.xaml.controls"
-        "windows.ui.composition"
-        "windows.ui.composition"
+        // "windows.foundation"
+        // "windows.ui.xaml.controls"
+        // "windows.ui.composition"
+        // "windows.ui.composition"
         "windows.ui"
-        "windows.storage"
+        //"windows.storage"
 );
 
 
