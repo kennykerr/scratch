@@ -10,9 +10,8 @@ winrt::import!(
         //"windows.storage"
 );
 
-
-
 fn main() -> winrt::Result<()> {
+
     use windows::ui::*;
     let color: Color = Default::default(); // Colors::alice_blue()?;
 
