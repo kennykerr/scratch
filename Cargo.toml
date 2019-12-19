@@ -5,3 +5,4 @@ edition = "2018"
 
 [dependencies]
 winrt = { path = "../winrt-rs" }
+winmd = { path = "../winmd-rs" }
