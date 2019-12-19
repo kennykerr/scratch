@@ -13,8 +13,6 @@ fn main() -> winrt::Result<()> {
     println!("{:?}", color);
     assert!(color == ColorHelper::from_argb(255, 255, 0, 0)?);
 
-    //println!("{}", ColorHelper::to_display_name(color)?);
-
     println!("woot!");
     Ok(())
 }
