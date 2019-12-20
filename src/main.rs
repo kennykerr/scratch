@@ -8,28 +8,38 @@ winrt::import!(
 
 use windows::ui::*;
 
-fn test_reader() {
-    let reader = winmd::Reader::from_files(&[r"C:\Windows\System32\WinMetadata\Windows.Foundation.winmd".to_string()]).unwrap();
-    let t = reader.find_type("Windows.Foundation.IAsyncOperationWithProgress`2").unwrap();
-    let g = t.generics();
-
-    if g.is_empty() {
-        println!("{} is not generic", t.name());
-    } else {
-        for param in g {
-            print!("{}, ", param.name());
-        }
-    }
-}
-
 fn main() -> winrt::Result<()> {
-    test_reader();
+    //test_reader();
 
-    // let color = Colors::red()?;
+    let color = Colors::red()?;
+    println!("{:?}", color);
+    assert!(color == ColorHelper::from_argb(255, 255, 0, 0)?);
+    println!("woot!");
 
-    // println!("{:?}", color);
-    // assert!(color == ColorHelper::from_argb(255, 255, 0, 0)?);
-
-    // println!("woot!");
     Ok(())
 }
+
+// fn test_reader() {
+//     let reader = winmd::Reader::from_files(&[r"C:\Windows\System32\WinMetadata\Windows.Foundation.winmd".to_string()]).unwrap();
+//     let t = reader.find_type("Windows.Foundation.IAsyncOperationWithProgress`2").unwrap();
+//     let g = t.generics();
+
+//     if g.is_empty() {
+//         println!("{} is not generic", t.name());
+//     } else {
+//         let name = if g.is_empty() {
+//             t.name()
+//         }
+//         else {
+//             let name = t.name();
+//             name.get(..name.len() - 2).unwrap()
+//         };
+
+//         println!("{} is generic", name);
+
+
+//         for param in g {
+//             print!("{}, ", param.name());
+//         }
+//     }
+// }
