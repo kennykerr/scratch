@@ -3,7 +3,6 @@ winrt::import!(
         "os"
     modules
         "windows.ui"
-        "windows.graphics.directx"
 );
 
 use windows::ui::*;
