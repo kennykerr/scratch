@@ -2,8 +2,8 @@ winrt::import!(
     dependencies
         "os"
     modules
-        //"windows.ui"
-        "windows.foundation"
+        "windows.ui"
+        //"windows.foundation"
 );
 
 use windows::ui::*;
