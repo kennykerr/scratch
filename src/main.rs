@@ -19,23 +19,23 @@ fn main() -> winrt::Result<()> {
     Ok(())
 }
 
-fn test_reader() {
-    let reader = winmd::Reader::from_files(&[
-        r"C:\Windows\System32\WinMetadata\Windows.Foundation.winmd".to_string(),
-    ])
-    .unwrap();
-    let t = reader
-        .find_type("Windows.Foundation.IAsyncOperationWithProgress`2")
-        .unwrap();
-    let g = t.generics();
+// fn test_reader() {
+//     let reader = winmd::Reader::from_files(&[
+//         r"C:\Windows\System32\WinMetadata\Windows.Foundation.winmd".to_string(),
+//     ])
+//     .unwrap();
+//     let t = reader
+//         .find_type("Windows.Foundation.IAsyncOperationWithProgress`2")
+//         .unwrap();
+//     let g = t.generics();
 
-    if g.is_empty() {
-        println!("{} is not generic", t.name());
-    } else {
-        println!("{} is generic", t.name());
+//     if g.is_empty() {
+//         println!("{} is not generic", t.name());
+//     } else {
+//         println!("{} is generic", t.name());
 
-        for param in g {
-            print!("{}, ", param.name());
-        }
-    }
-}
+//         for param in g {
+//             print!("{}, ", param.name());
+//         }
+//     }
+// }
