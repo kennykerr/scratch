@@ -11,6 +11,8 @@ use windows::ui::*;
 fn main() -> winrt::Result<()> {
     //test_reader();
 
+    winrt::String::new();
+
     let color = Colors::red()?;
     println!("{:?}", color);
     assert!(color == ColorHelper::from_argb(255, 255, 0, 0)?);
