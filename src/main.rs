@@ -11,7 +11,14 @@ use windows::ui::*;
 fn main() -> winrt::Result<()> {
     //test_reader();
 
-    winrt::String::new();
+    let a = winrt::String::new();
+    assert!(a.is_empty());
+    assert!(a.len() == 0);
+    assert!(a.as_chars().len() == 0);
+
+    let hello = winrt::String::from("Hello");
+    assert!(!hello.is_empty());
+    assert!(hello.len() == 5);
 
     let color = Colors::red()?;
     println!("{:?}", color);
