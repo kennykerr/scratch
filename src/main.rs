@@ -2,6 +2,7 @@ use proc_macro2::{Literal, TokenStream};
 use quote::{format_ident, quote};
 use winmd::*;
 use std::collections::*;
+use std::iter::FromIterator;
 
 struct Writer<'a> {
     pub r: &'a Reader,
@@ -11,7 +12,7 @@ struct Writer<'a> {
 }
 
 impl<'a> Writer<'a> {
-    pub fn write(r: &'a Reader, limits: &'a BTreeSet<String>) -> TokenStream {
+    pub fn write(r: &Reader, limits: &BTreeSet<String>) -> TokenStream {
         let mut tokens = Vec::new();
 
         // TODO: parallalelize this loop
@@ -19,6 +20,8 @@ impl<'a> Writer<'a> {
             let w = Writer { r, namespace, limits, generics: Default::default() };
             tokens.push(w.write_namespace());
         }
+
+        // TODO: need to rewrite the namespace token streams into a hierarchy
 
         TokenStream::from_iter(tokens)
     }
@@ -30,6 +33,9 @@ impl<'a> Writer<'a> {
 
 fn main() -> winrt::Result<()> {
     let r = &winmd::Reader::from_os().unwrap();
+    let mut limits = BTreeSet::new();
+    limits.insert("Windows.Foundation".to_string());
+    let tokens = Writer::write(r, &limits);
 
     for (namespace, types) in r.namespaces() {
         if namespace == "Windows.Foundation" {
