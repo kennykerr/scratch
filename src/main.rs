@@ -4,9 +4,28 @@ use winmd::*;
 use std::collections::*;
 
 struct Writer<'a> {
-    pub reader: &'a Reader,
+    pub r: &'a Reader,
+    pub namespace: &'a str,
     pub limits: &'a BTreeSet<String>,
     pub generics: Vec<Vec<String>>,
+}
+
+impl<'a> Writer<'a> {
+    pub fn write(r: &'a Reader, limits: &'a BTreeSet<String>) -> TokenStream {
+        let mut tokens = Vec::new();
+
+        // TODO: parallalelize this loop
+        for namespace in limits {
+            let w = Writer { r, namespace, limits, generics: Default::default() };
+            tokens.push(w.write_namespace());
+        }
+
+        TokenStream::from_iter(tokens)
+    }
+
+    fn write_namespace(&self) -> TokenStream {
+        TokenStream::new()
+    }
 }
 
 fn main() -> winrt::Result<()> {
