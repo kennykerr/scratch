@@ -1,3 +1,14 @@
+use proc_macro2::{Literal, TokenStream};
+use quote::{format_ident, quote};
+use winmd::*;
+use std::collections::*;
+
+struct Writer<'a> {
+    pub reader: &'a Reader,
+    pub limits: &'a BTreeSet<String>,
+    pub generics: Vec<Vec<String>>,
+}
+
 fn main() -> winrt::Result<()> {
     let r = &winmd::Reader::from_os().unwrap();
 

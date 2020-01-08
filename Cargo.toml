@@ -6,3 +6,6 @@ edition = "2018"
 [dependencies]
 winrt = { path = "../winrt-rs" }
 winmd = { path = "../winmd-rs" }
+syn = "1.0"
+quote = "1.0"
+proc-macro2 = "1.0"
