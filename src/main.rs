@@ -1,57 +1,14 @@
-use proc_macro2::{Literal, TokenStream};
-use quote::{format_ident, quote};
+
+
 use winmd::*;
-use std::collections::*;
-use std::iter::FromIterator;
-
-struct Writer<'a> {
-    pub r: &'a Reader,
-    pub namespace: &'a str,
-    pub limits: &'a BTreeSet<String>,
-    pub generics: Vec<Vec<String>>,
-}
-
-impl<'a> Writer<'a> {
-    pub fn write(r: &Reader, limits: &BTreeSet<String>) -> TokenStream {
-        let mut tokens = Vec::new();
-
-        // TODO: parallalelize this loop
-        for namespace in limits {
-            let w = Writer { r, namespace, limits, generics: Default::default() };
-            tokens.push(w.write_namespace());
-        }
-
-        // TODO: need to rewrite the namespace token streams into a hierarchy
-
-        TokenStream::from_iter(tokens)
-    }
-
-    fn write_namespace(&self) -> TokenStream {
-        TokenStream::new()
-    }
-}
 
 fn main() -> winrt::Result<()> {
-    let r = &winmd::Reader::from_os().unwrap();
-    let mut limits = BTreeSet::new();
-    limits.insert("Windows.Foundation".to_string());
-    let tokens = Writer::write(r, &limits);
+    let mut writer = RustWriter::new();
+    writer.add_namespace("Windows.Foundation");
+    writer.add_namespace("Windows.UI.Composition");
 
-    for (namespace, types) in r.namespaces() {
-        if namespace == "Windows.Foundation" {
-            for (name, t) in types {
-                println!("{}.{}", t.namespace(r), name);
-                if !t.flags(r).interface() {
-                    println!("    {}", t.extends(r).name(r));
-                    if t.extends(r).name(r) == "ValueType" {
-                        for f in t.fields(r) {
-                            println!("    {}", f.name(r));
-                        }
-                    }
-                }
-            }
-        }
-    }
+    let tokens = writer.write();
+    //println!("{}", tokens.to_string());
 
     Ok(())
 }
