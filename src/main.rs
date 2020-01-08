@@ -1,5 +1,3 @@
-
-
 use winmd::*;
 
 fn main() -> winrt::Result<()> {
