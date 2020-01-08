@@ -1,6 +1,4 @@
-
 fn main() -> winrt::Result<()> {
-
     let r = &winmd::Reader::from_os().unwrap();
 
     for (namespace, types) in r.namespaces() {
