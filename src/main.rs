@@ -1,19 +1,29 @@
 
 
+// struct Thing<T> {
+//     ptr: *mut std::ffi::c_void,
+//     __0: std::marker::PhantomData<T>
+// }
 
-use winmd::*;
 
-fn main() -> winrt::Result<()> {
-    let mut writer = RustWriter::new();
-    //writer.add_namespace("Windows.Foundation");
-    //writer.add_namespace("Windows.UI.Composition");
-    writer.add_namespace("Windows.UI");
+// impl<T> Type<T> {
+//     fn test(value: T) {}
+// }
 
-    let tokens = writer.write();
-    //println!("{}", tokens.to_string());
+// use winmd::*;
 
-    Ok(())
-}
+// fn main() -> winrt::Result<()> {
+//     let mut writer = RustWriter::new();
+//     //writer.add_namespace("Windows.Foundation");
+//     //writer.add_namespace("Windows.UI.Composition");
+//     writer.add_namespace("Windows.UI");
+
+//     let tokens = writer.write();
+//     //println!("{}", tokens.to_string());
+
+//     Ok(())
+// }
+
 
 // winrt::import!(
 //     dependencies
@@ -23,9 +33,23 @@ fn main() -> winrt::Result<()> {
 //         //"windows.foundation"
 // );
 
-//  use windows::ui::*;
+struct Thing {
 
-// fn main() -> winrt::Result<()> {
+}
+
+impl Thing {
+    type AbiType = i32;
+    fn test() {
+        let a: Self::AbiType = 5;
+    }
+}
+
+ //use windows::ui::*;
+
+fn main() -> winrt::Result<()> {
+
+   // let t = Thing::<u32> { ptr:, .. Default::default() };
+
 //     //test_reader();
 
 //     let a = winrt::String::new();
@@ -42,8 +66,8 @@ fn main() -> winrt::Result<()> {
 //     assert!(color == ColorHelper::from_argb(255, 255, 0, 0)?);
 //     println!("woot!");
 
-//     Ok(())
-// }
+     Ok(())
+ }
 
 // // fn test_reader() {
 // //     let reader = winmd::Reader::from_files(&[
