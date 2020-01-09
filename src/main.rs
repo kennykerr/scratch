@@ -25,24 +25,13 @@
 // }
 
 
-// winrt::import!(
-//     dependencies
-//         "os"
-//     modules
-//         "windows.ui"
-//         //"windows.foundation"
-// );
-
-struct Thing {
-
-}
-
-impl Thing {
-    type AbiType = i32;
-    fn test() {
-        let a: Self::AbiType = 5;
-    }
-}
+winrt::import!(
+    dependencies
+        "os"
+    modules
+        "windows.ui"
+        //"windows.foundation"
+);
 
  //use windows::ui::*;
 
