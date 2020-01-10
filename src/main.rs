@@ -1,32 +1,4 @@
 
-
-// struct Thing<T> {
-//     ptr: *mut std::ffi::c_void,
-//     __0: std::marker::PhantomData<T>
-// }
-
-// impl<T> Type<T> {
-//     fn test(value: T) {}
-// }
-
-// use winmd::*;
-
-// fn main() -> winrt::Result<()> {
-//     let mut writer = RustWriter::new();
-//     //writer.add_namespace("Windows.Foundation");
-//     //writer.add_namespace("Windows.UI.Composition");
-//     writer.add_namespace("Windows.UI");
-
-//     let tokens = writer.write();
-//     //println!("{}", tokens.to_string());
-
-//     Ok(())
-// }
-
-// struct Thing<T: winrt::AsAbi> {
-
-// }
-
 winrt::import!(
     dependencies
         "os"
@@ -35,19 +7,12 @@ winrt::import!(
         //"windows.foundation"
 );
 
+use winrt::AsAbi;
+
 fn main() -> winrt::Result<()> {
-    // let t = Thing::<u32> { ptr:, .. Default::default() };
-
-    //     //test_reader();
-
-    //     let a = winrt::String::new();
-    //     assert!(a.is_empty());
-    //     assert!(a.len() == 0);
-    //     assert!(a.as_chars().len() == 0);
-
-    //     let hello = winrt::String::from("Hello");
-    //     assert!(!hello.is_empty());
-    //     assert!(hello.len() == 5);
+    let uri = Uri::create_uri(&winrt::String::from("http://kennykerr.ca"))?;
+    let uri = IUriRuntimeClass::from(uri.as_abi_in());
+    println!("uri: {}", uri.domain()?);
 
     use windows::foundation::*;
     let a = GuidHelper::create_new_guid()?;
@@ -62,8 +27,6 @@ fn main() -> winrt::Result<()> {
     let d = winrt::Guid::from("11E158E9-778C-471F-92D0-5D54ED93855D");
     println!("{:?}", d);
 
-    let uri = Uri::create_uri(&winrt::String::from("http://kennykerr.ca"))?;
-
     use windows::ui::*;
     let color = Colors::red()?;
     println!("{:?}", color);
@@ -73,23 +36,15 @@ fn main() -> winrt::Result<()> {
     Ok(())
 }
 
-// // fn test_reader() {
-// //     let reader = winmd::Reader::from_files(&[
-// //         r"C:\Windows\System32\WinMetadata\Windows.Foundation.winmd".to_string(),
-// //     ])
-// //     .unwrap();
-// //     let t = reader
-// //         .find_type("Windows.Foundation.IAsyncOperationWithProgress`2")
-// //         .unwrap();
-// //     let g = t.generics();
+// fn main() -> winrt::Result<()> {
+//     use winmd::*;
+//     let mut writer = RustWriter::new();
+//     //writer.add_namespace("Windows.Foundation");
+//     //writer.add_namespace("Windows.UI.Composition");
+//     writer.add_namespace("Windows.UI");
 
-// //     if g.is_empty() {
-// //         println!("{} is not generic", t.name());
-// //     } else {
-// //         println!("{} is generic", t.name());
+//     let tokens = writer.write();
+//     //println!("{}", tokens.to_string());
 
-// //         for param in g {
-// //             print!("{}, ", param.name());
-// //         }
-// //     }
-// // }
+//     Ok(())
+// }
