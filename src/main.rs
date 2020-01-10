@@ -25,17 +25,17 @@
 // }
 
 
-struct Thing<T: winrt::AsAbi> {
+// struct Thing<T: winrt::AsAbi> {
 
-}
+// }
 
-// winrt::import!(
-//     dependencies
-//         "os"
-//     modules
-//         "windows.ui"
-//         //"windows.foundation"
-// );
+winrt::import!(
+    dependencies
+        "os"
+    modules
+        "windows.ui"
+        //"windows.foundation"
+);
 
  //use windows::ui::*;
 
