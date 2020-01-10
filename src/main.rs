@@ -57,9 +57,12 @@ fn main() -> winrt::Result<()> {
     let c = Default::default();
     assert!(b == c);
     assert!(GuidHelper::equals(&b, &c)?);
+    println!("{:?}", b);
 
     let d = winrt::Guid::from("11E158E9-778C-471F-92D0-5D54ED93855D");
     println!("{:?}", d);
+
+    let uri = Uri::create_uri(&winrt::String::from("http://kennykerr.ca"))?;
 
     use windows::ui::*;
     let color = Colors::red()?;
