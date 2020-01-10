@@ -25,17 +25,25 @@
 // }
 
 
-winrt::import!(
-    dependencies
-        "os"
-    modules
-        "windows.ui"
-        //"windows.foundation"
-);
+struct Thing<T: winrt::AsAbi> {
+
+}
+
+// winrt::import!(
+//     dependencies
+//         "os"
+//     modules
+//         "windows.ui"
+//         //"windows.foundation"
+// );
 
  //use windows::ui::*;
 
+
+
 fn main() -> winrt::Result<()> {
+
+    
 
    // let t = Thing::<u32> { ptr:, .. Default::default() };
 
