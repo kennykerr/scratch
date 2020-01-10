@@ -1,3 +1,5 @@
+
+
 // struct Thing<T> {
 //     ptr: *mut std::ffi::c_void,
 //     __0: std::marker::PhantomData<T>
@@ -47,11 +49,23 @@ fn main() -> winrt::Result<()> {
     //     assert!(!hello.is_empty());
     //     assert!(hello.len() == 5);
 
-    // use windows::ui::*;
-    // let color = Colors::red()?;
-    // println!("{:?}", color);
-    // assert!(color == ColorHelper::from_argb(255, 255, 0, 0)?);
-    // println!("woot!");
+    use windows::foundation::*;
+    let a = GuidHelper::create_new_guid()?;
+    println!("{:?}", a);
+
+    let b = GuidHelper::empty()?;
+    let c = Default::default();
+    assert!(b == c);
+    assert!(GuidHelper::equals(&b, &c)?);
+
+    let d = winrt::Guid::from("11E158E9-778C-471F-92D0-5D54ED93855D");
+    println!("{:?}", d);
+
+    use windows::ui::*;
+    let color = Colors::red()?;
+    println!("{:?}", color);
+    assert!(color == ColorHelper::from_argb(255, 255, 0, 0)?);
+    println!("woot!");
 
     Ok(())
 }
