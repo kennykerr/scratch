@@ -1,9 +1,7 @@
-
 // struct Thing<T> {
 //     ptr: *mut std::ffi::c_void,
 //     __0: std::marker::PhantomData<T>
 // }
-
 
 // impl<T> Type<T> {
 //     fn test(value: T) {}
@@ -23,7 +21,6 @@
 //     Ok(())
 // }
 
-
 // struct Thing<T: winrt::AsAbi> {
 
 // }
@@ -36,33 +33,28 @@ winrt::import!(
         //"windows.foundation"
 );
 
- 
-
 fn main() -> winrt::Result<()> {
+    // let t = Thing::<u32> { ptr:, .. Default::default() };
 
-    
+    //     //test_reader();
 
-   // let t = Thing::<u32> { ptr:, .. Default::default() };
+    //     let a = winrt::String::new();
+    //     assert!(a.is_empty());
+    //     assert!(a.len() == 0);
+    //     assert!(a.as_chars().len() == 0);
 
-//     //test_reader();
+    //     let hello = winrt::String::from("Hello");
+    //     assert!(!hello.is_empty());
+    //     assert!(hello.len() == 5);
 
-//     let a = winrt::String::new();
-//     assert!(a.is_empty());
-//     assert!(a.len() == 0);
-//     assert!(a.as_chars().len() == 0);
+    // use windows::ui::*;
+    // let color = Colors::red()?;
+    // println!("{:?}", color);
+    // assert!(color == ColorHelper::from_argb(255, 255, 0, 0)?);
+    // println!("woot!");
 
-//     let hello = winrt::String::from("Hello");
-//     assert!(!hello.is_empty());
-//     assert!(hello.len() == 5);
-
-use windows::ui::*;
- let color = Colors::red()?;
-    println!("{:?}", color);
-    assert!(color == ColorHelper::from_argb(255, 255, 0, 0)?);
-    println!("woot!");
-
-     Ok(())
- }
+    Ok(())
+}
 
 // // fn test_reader() {
 // //     let reader = winmd::Reader::from_files(&[
