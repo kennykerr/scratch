@@ -1,5 +1,4 @@
 
-
 // struct Thing<T> {
 //     ptr: *mut std::ffi::c_void,
 //     __0: std::marker::PhantomData<T>
@@ -37,9 +36,7 @@ winrt::import!(
         //"windows.foundation"
 );
 
- //use windows::ui::*;
-
-
+ 
 
 fn main() -> winrt::Result<()> {
 
@@ -58,10 +55,11 @@ fn main() -> winrt::Result<()> {
 //     assert!(!hello.is_empty());
 //     assert!(hello.len() == 5);
 
-//     let color = Colors::red()?;
-//     println!("{:?}", color);
-//     assert!(color == ColorHelper::from_argb(255, 255, 0, 0)?);
-//     println!("woot!");
+use windows::ui::*;
+ let color = Colors::red()?;
+    println!("{:?}", color);
+    assert!(color == ColorHelper::from_argb(255, 255, 0, 0)?);
+    println!("woot!");
 
      Ok(())
  }
