@@ -1,5 +1,6 @@
+use winrt::*;
 
-winrt::import!(
+import!(
     dependencies
         "os"
     modules
@@ -7,10 +8,8 @@ winrt::import!(
         //"windows.foundation"
 );
 
-use winrt::AsAbi;
-
-fn main() -> winrt::Result<()> {
-    let mut uri = Uri::create_uri(&winrt::String::from("http://kennykerr.ca"))?;
+fn main() -> Result<()> {
+    let mut uri = Uri::create_uri(&String::from("http://kennykerr.ca"))?;
     let uri = IUriRuntimeClass::from(uri.detach_abi());
     println!("uri: {}", uri.domain()?);
 
@@ -24,7 +23,7 @@ fn main() -> winrt::Result<()> {
     assert!(GuidHelper::equals(&b, &c)?);
     println!("{:?}", b);
 
-    let d = winrt::Guid::from("11E158E9-778C-471F-92D0-5D54ED93855D");
+    let d = Guid::from("11E158E9-778C-471F-92D0-5D54ED93855D");
     println!("{:?}", d);
 
     use windows::ui::*;
