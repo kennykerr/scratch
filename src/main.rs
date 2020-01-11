@@ -10,8 +10,8 @@ winrt::import!(
 use winrt::AsAbi;
 
 fn main() -> winrt::Result<()> {
-    let uri = Uri::create_uri(&winrt::String::from("http://kennykerr.ca"))?;
-    let uri = IUriRuntimeClass::from(uri.as_abi_in());
+    let mut uri = Uri::create_uri(&winrt::String::from("http://kennykerr.ca"))?;
+    let uri = IUriRuntimeClass::from(uri.detach_abi());
     println!("uri: {}", uri.domain()?);
 
     use windows::foundation::*;
