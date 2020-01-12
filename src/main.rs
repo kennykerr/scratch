@@ -8,7 +8,29 @@ import!(
         //"windows.foundation"
 );
 
+fn call<'a, S:Into<InputString<'a>>>(value: S) {
+    match value.into() {
+        InputString::Slice(value) => println!("a: {}", value),
+        InputString::String(value) => println!("b: {}", value),
+        InputString::WinrtStringSlice(value) => println!("c: {}", value),
+        InputString::WinrtString(value) => println!("d: {}", value),
+    }
+}
+
+
+
 fn main() -> Result<()> {
+
+    let a = winrt::String::from("winrt string");
+
+     call(&a);
+     call(a);
+     call("slice");
+     call("string".to_string());
+    // call(a);
+    // call("rust string".into());
+   // call("call_a");
+
     let mut uri = Uri::create_uri(&String::from("http://kennykerr.ca"))?;
     let uri = IUriRuntimeClass::from(uri.detach_abi());
     println!("uri: {}", uri.domain()?);
