@@ -9,19 +9,24 @@ import!(
 );
 
 fn call<'a, S:Into<param::String<'a>>>(value: S) {
-    match value.into() {
-        param::String::Ref(value) => println!("a: {}", value),
-        param::String::String(value) => println!("b: {}", value),
-        param::String::WinrtStringRef(value) => println!("c: {}", value),
-        param::String::WinrtString(value) => println!("d: {}", value),
-    }
+    let ptr = value.into().as_abi_in();
+
+    let mut a = winrt::String::from(ptr as *mut std::ffi::c_void);
+
+    println!("hstring {}", a);
+
+    a.detach_abi();
 }
 
 
 
 fn main() -> Result<()> {
 
-    let a = winrt::String::from("winrt string");
+    let mut a = winrt::String::from("winrt string");
+
+    let rust = &("rust".to_string());
+
+    a = rust.into();
 
      call(&a);
      call(a);
