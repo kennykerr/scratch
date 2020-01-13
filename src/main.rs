@@ -8,12 +8,12 @@ import!(
         //"windows.foundation"
 );
 
-fn call<'a, S:Into<InputString<'a>>>(value: S) {
+fn call<'a, S:Into<param::String<'a>>>(value: S) {
     match value.into() {
-        InputString::Slice(value) => println!("a: {}", value),
-        InputString::String(value) => println!("b: {}", value),
-        InputString::WinrtStringSlice(value) => println!("c: {}", value),
-        InputString::WinrtString(value) => println!("d: {}", value),
+        param::String::Ref(value) => println!("a: {}", value),
+        param::String::String(value) => println!("b: {}", value),
+        param::String::WinrtStringRef(value) => println!("c: {}", value),
+        param::String::WinrtString(value) => println!("d: {}", value),
     }
 }
 
