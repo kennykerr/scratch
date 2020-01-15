@@ -8,7 +8,9 @@ import!(
         //"windows.foundation"
 );
 
-fn call<'a, S:Into<param::String<'a>>>(value: S) {
+fn call<'a, S: Into<param::String<'a>>>(value: S) {
+    // TODO: maybe custom Into trait that avoids the .into()
+    // Maybe a AsParamAbi
     let ptr = value.into().as_abi_in();
 
     let mut a = winrt::String::from(ptr as *mut std::ffi::c_void);
@@ -18,23 +20,29 @@ fn call<'a, S:Into<param::String<'a>>>(value: S) {
     a.detach_abi();
 }
 
+struct Thing {}
 
+impl<'a> Into<winrt::param::String<'a>> for Thing {
+    fn into(self) -> winrt::param::String<'a> {
+        param::String::Ref("Thing")
+    }
+}
 
 fn main() -> Result<()> {
-
     let mut a = winrt::String::from("winrt string");
 
     let rust = &("rust".to_string());
 
     a = rust.into();
 
-     call(&a);
-     call(a);
-     call("slice");
-     call("string".to_string());
+    call(Thing {});
+    call(&a);
+    call(a);
+    call("slice");
+    call("string".to_string());
     // call(a);
     // call("rust string".into());
-   // call("call_a");
+    // call("call_a");
 
     let mut uri = Uri::create_uri(&String::from("http://kennykerr.ca"))?;
     let uri = IUriRuntimeClass::from(uri.detach_abi());
