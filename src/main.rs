@@ -97,8 +97,8 @@ fn main() -> Result<()> {
     // call("rust string".into());
     // call("call_a");
 
-    let mut uri = Uri::create_uri(&String::from("http://kennykerr.ca"))?;
-    let uri = IUriRuntimeClass::from(uri.detach_abi());
+    let uri = Uri::create_uri(&String::from("http://kennykerr.ca"))?;
+    let uri: IUriRuntimeClass = uri.into();
     println!("uri: {}", uri.domain()?);
 
     use windows::foundation::*;
