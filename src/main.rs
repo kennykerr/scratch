@@ -1,4 +1,56 @@
-use winrt::*;
+//  use winmd::*;
+//  use proc_macro2::TokenStream;
+
+//     fn interfaces(r:&Reader, t:&TypeDef) -> Vec<InterfaceInfo> {
+//         let mut result = Vec::<InterfaceInfo>::new();
+    
+//         for i in t.interfaces(r) {
+//             let default = i.has_attribute(r, "Windows.Foundation.Metadata", "DefaultAttribute");
+//             let overridable = i.has_attribute(r, "Windows.Foundation.Metadata", "OverridableAttribute");
+//             let mut generics = Vec::new();
+    
+//             let definition = match i.interface(r) {
+//                 TypeDefOrRef::TypeDef(value) => value,
+//                 TypeDefOrRef::TypeRef(value) => value.resolve(r),
+//                 TypeDefOrRef::TypeSpec(value) => {
+
+//                     let sig = value.signature(r);
+
+    
+//                     sig.sig_type().resolve(r)
+//                 }
+//             };
+    
+//             if let Err(index) = result.binary_search_by_key(&definition, |info|info.definition) {
+//                 let exclusive = definition.has_attribute(r, "Windows.Foundation.Metadata", "ExclusiveToAttribute");
+//                 result.insert(index, InterfaceInfo{definition, generics, default, overridable, exclusive});
+//             }
+//         }
+    
+//         result
+//     }
+
+
+// struct InterfaceInfo {
+//     definition: TypeDef,
+//     generics: Vec<Vec<TokenStream>>,
+//     default: bool,
+//     overridable: bool,
+//     exclusive: bool,
+// }
+
+
+
+// fn main() {
+//     let r = &Reader::from_os().unwrap();
+//     let t = r.resolve("Windows.Foundation.WwwFormUrlDecoder");
+
+//     for i in interfaces(r, &t) {
+//         println!("{} - default:{}", i.definition.name(r), i.default);
+//     }
+// }
+
+ use winrt::*;
 
 import!(
     dependencies
@@ -73,9 +125,9 @@ fn main() -> Result<()> {
 // fn main() -> winrt::Result<()> {
 //     use winmd::*;
 //     let mut writer = RustWriter::new();
-//     //writer.add_namespace("Windows.Foundation");
+//     writer.add_namespace("Windows.Foundation.Collections");
 //     //writer.add_namespace("Windows.UI.Composition");
-//     writer.add_namespace("Windows.UI");
+//     //writer.add_namespace("Windows.UI");
 
 //     let tokens = writer.write();
 //     //println!("{}", tokens.to_string());
