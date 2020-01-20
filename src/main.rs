@@ -1,137 +1,121 @@
+use winrt::*;
 
-//  use winmd::*;
-//  use proc_macro2::TokenStream;
-
-//     fn interfaces(r:&Reader, t:&TypeDef) -> Vec<InterfaceInfo> {
-//         let mut result = Vec::<InterfaceInfo>::new();
-    
-//         for i in t.interfaces(r) {
-//             let default = i.has_attribute(r, "Windows.Foundation.Metadata", "DefaultAttribute");
-//             let overridable = i.has_attribute(r, "Windows.Foundation.Metadata", "OverridableAttribute");
-//             let mut generics = Vec::new();
-    
-//             let definition = match i.interface(r) {
-//                 TypeDefOrRef::TypeDef(value) => value,
-//                 TypeDefOrRef::TypeRef(value) => value.resolve(r),
-//                 TypeDefOrRef::TypeSpec(value) => {
-
-//                     let sig = value.signature(r);
-
-    
-//                     sig.sig_type().resolve(r)
-//                 }
-//             };
-    
-//             if let Err(index) = result.binary_search_by_key(&definition, |info|info.definition) {
-//                 let exclusive = definition.has_attribute(r, "Windows.Foundation.Metadata", "ExclusiveToAttribute");
-//                 result.insert(index, InterfaceInfo{definition, generics, default, overridable, exclusive});
-//             }
-//         }
-    
-//         result
-//     }
-
-
-// struct InterfaceInfo {
-//     definition: TypeDef,
-//     generics: Vec<Vec<TokenStream>>,
-//     default: bool,
-//     overridable: bool,
-//     exclusive: bool,
-// }
-
-
-
-// fn main() {
-//     let r = &Reader::from_os().unwrap();
-//     let t = r.resolve("Windows.Foundation.WwwFormUrlDecoder");
-
-//     for i in interfaces(r, &t) {
-//         println!("{} - default:{}", i.definition.name(r), i.default);
-//     }
-// }
-
- use winrt::*;
-
-import!(
-    dependencies
-        "os"
-    modules
-        "windows.ui"
-        //"windows.foundation"
-);
-
-fn call<'a, S: Into<param::String<'a>>>(value: S) {
-    // TODO: maybe custom Into trait that avoids the .into()
-    // Maybe a AsParamAbi
-    let ptr = value.into().as_abi_in();
-
-    let mut a = winrt::String::from(ptr as *mut std::ffi::c_void);
-
-    println!("hstring {}", a);
-
-    a.detach_abi();
+struct IUriRuntimeClass {
+    ptr: RawPtr
 }
 
-struct Thing {}
+#[repr(C)]
+struct abi_IUriRuntimeClass {
+    __0: usize,
+    __1: usize,
+    __2: usize,
+    __3: usize,
+    __4: usize,
+    __5: usize,
+    absolute_uri: extern "system" fn(RawPtr, &mut RawPtr) -> ErrorCode,
+    display_uri: extern "system" fn(RawPtr, &mut RawPtr) -> ErrorCode,
+    domain: extern "system" fn(RawPtr, &mut RawPtr) -> ErrorCode,
+}
 
-impl<'a> Into<winrt::param::String<'a>> for Thing {
-    fn into(self) -> winrt::param::String<'a> {
-        param::String::Ref("Thing")
+impl TypeGuid for IUriRuntimeClass {
+    fn type_guid() -> &'static Guid {
+        panic!("guid of IUriRuntimeClass");
     }
 }
 
+
+impl IUriRuntimeClass {
+    fn domain(&self) -> Result<String> {
+        unsafe {
+            let mut __ok = std::mem::zeroed();
+            ((*(*(self.ptr as *const *const abi_IUriRuntimeClass))).domain)(
+                self.ptr, &mut __ok
+            )
+            .ok_or(__ok.into())
+        }
+    }
+}
+
+
+struct IUriRuntimeClassFactory {
+    ptr: RawPtr
+}
+
+#[repr(C)]
+struct abi_IUriRuntimeClassFactory {
+    __0: usize,
+    __1: usize,
+    __2: usize,
+    __3: usize,
+    __4: usize,
+    __5: usize,
+    create_uri: extern "system" fn(RawPtr, RawPtr, &mut RawPtr) -> ErrorCode,
+}
+
+impl TypeGuid for IUriRuntimeClassFactory {
+    fn type_guid() -> &'static Guid {
+        static GUID: winrt::Guid = winrt::Guid::from_values(
+            0x44A9796F,0x723E,0x4FDF, &[0xA2,0x18,0x03,0x3E,0x75,0xB0,0xC0,0x84]
+        );
+        &GUID
+    }
+}
+
+impl From<RawPtr> for IUriRuntimeClassFactory {
+    fn from(value: RawPtr) -> Self {
+        unsafe { std::mem::transmute(value) }
+    }
+}
+
+
+impl IUriRuntimeClassFactory {
+    fn create_uri<'a, __0: Into<param::String<'a>>>(&self, value: __0) -> Result<Uri> {
+        unsafe {
+            let mut __ok = std::mem::zeroed();
+            ((*(*(self.ptr as *const *const abi_IUriRuntimeClassFactory))).create_uri)(
+                self.ptr, value.into().as_abi(), &mut __ok
+            )
+            .ok_or(__ok.into())
+        }
+    }
+}
+
+struct Uri {
+    ptr: RawPtr
+}
+
+impl TypeName for Uri {
+    fn type_name() -> &'static str {
+        "Windows.Foundation.Uri"
+    }
+}
+
+impl Uri {
+    fn create_uri<'a, __0: Into<param::String<'a>>>(value: __0) -> Result<Uri> {
+        factory::<Uri, IUriRuntimeClassFactory>()?.create_uri(value)
+    }
+
+    fn domain(&self) -> Result<String> {
+        unsafe {
+            let mut __ok = std::mem::zeroed();
+            ((*(*(self.ptr as *const *const abi_IUriRuntimeClass))).domain)(
+                self.ptr, &mut __ok
+            )
+            .ok_or(__ok.into())
+        }
+    }
+}
+
+impl From<RawPtr> for Uri {
+    fn from(value: RawPtr) -> Self {
+        unsafe { std::mem::transmute(value) }
+    }
+}
+
+
 fn main() -> Result<()> {
-    let mut a = winrt::String::from("winrt string");
-
-    let rust = &("rust".to_string());
-
-    a = rust.into();
-
-    call(Thing {});
-    call(&a);
-    call(a);
-    call("slice");
-    call("string".to_string());
-    // call(a);
-    // call("rust string".into());
-    // call("call_a");
-
-    let uri = Uri::create_uri(&String::from("http://kennykerr.ca"))?;
-    let uri: IUriRuntimeClass = uri.into();
-    println!("uri: {}", uri.domain()?);
-
-    use windows::foundation::*;
-    let a = GuidHelper::create_new_guid()?;
-    println!("{:?}", a);
-
-    let b = GuidHelper::empty()?;
-    let c = Default::default();
-    assert!(b == c);
-    assert!(GuidHelper::equals(&b, &c)?);
-    println!("{:?}", b);
-
-    let d = Guid::from("11E158E9-778C-471F-92D0-5D54ED93855D");
-    println!("{:?}", d);
-
-    use windows::ui::*;
-    let color = Colors::red()?;
-    println!("{:?}", color);
-    assert!(color == ColorHelper::from_argb(255, 255, 0, 0)?);
-    println!("woot!");
+    let uri = Uri::create_uri("http://kennykerr.ca")?;
+    println!("domain: {}", uri.domain()?);
 
     Ok(())
 }
-
-// fn main() -> winrt::Result<()> {
-//     use winmd::*;
-//     let mut writer = RustWriter::new();
-//     writer.add_namespace("Windows.Foundation.Collections");
-//     //writer.add_namespace("Windows.UI.Composition");
-//     //writer.add_namespace("Windows.UI");
-
-//     let tokens = writer.write();
-//     //println!("{}", tokens.to_string());
-
-//     Ok(())
-// }
