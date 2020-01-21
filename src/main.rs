@@ -9,55 +9,32 @@ import!(
 
 use windows::foundation::*;
 
-struct A{}
-struct B{}
+fn call<'a, T:Into<Param<'a, IStringable>>>(s: T) -> Result<()> {
+    
 
-impl AsRef<B> for B {
-    fn as_ref(&self) -> &B {
-        self
-    }
+    Ok(())
 }
-
-impl AsRef<B> for A {
-    fn as_ref(&self) -> &B {
-        &B{}
-    }
-}
-
-fn call<T: AsRef<B>>(value: T) {
-    println!("call");
-}
-
-// fn call<T:AsRef<IStringable>>(s: T) -> Result<()> {
-//     println!("call {}", s.as_ref().to_string()?);
-
-//     Ok(())
-// }
 
 fn main() -> Result<()> {
 
-    call(B{});
-    let b = B{};
-    call(&b);
-    call(A{});
-    let a = A{};
-    call(&a);
+    let uri = &Uri::create_uri("http://kennykerr.ca")?;
+    println!("domain: {}", uri.domain()?);
 
-    // let uri = &Uri::create_uri("http://kennykerr.ca")?;
-    // println!("domain: {}", uri.domain()?);
-
-    // let d: IUriRuntimeClass = uri.into();
-    // println!("domain: {}", d.domain()?);
-    // println!("port: {}", d.port()?);
+    let d: IUriRuntimeClass = uri.into();
+    println!("domain: {}", d.domain()?);
+    println!("port: {}", d.port()?);
     
-    // let s: IStringable = uri.into();
-    // let value = s.to_string()?;
-    // println!("stringable: {}", value);
+    let s: IStringable = uri.into();
+    let value = s.to_string()?;
+    println!("stringable: {}", value);
 
-    // println!("domain: {}", uri.domain()?);
+    println!("domain: {}", uri.domain()?);
 
-    // call(&s);
-    // call(s);
+    call(uri);
+    //call(d);
+    call(&s);
+    call(Uri::create_uri("http://kennykerr.ca")?);
+
 
     Ok(())
 }
