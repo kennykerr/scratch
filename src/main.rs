@@ -13,7 +13,7 @@ import!(
     dependencies
         "os"
     modules
-        "windows.foundation"
+        "windows.foundation.collections"
 );
 
 use windows::foundation::collections::*;
