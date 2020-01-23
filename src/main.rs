@@ -1,8 +1,8 @@
-use winrt::*;
 use winmd::*;
+use winrt::*;
 
 // fn main() {
-    
+
 //     let mut writer = RustWriter::new();
 //     //writer.add_namespace("Windows.UI");
 //     writer.add_namespace("Windows.Foundation.Collections");
@@ -16,6 +16,7 @@ import!(
         "windows.foundation"
 );
 
+use windows::foundation::collections::*;
 use windows::foundation::*;
 
 fn main() -> Result<()> {
@@ -31,6 +32,8 @@ fn main() -> Result<()> {
     println!("stringable: {}", value);
 
     println!("domain: {}", uri.domain()?);
+
+    let v = uri.query_parsed()?;
 
     call(uri);
     //call(d);
