@@ -1,4 +1,13 @@
 use winrt::*;
+use winmd::*;
+
+// fn main() {
+    
+//     let mut writer = RustWriter::new();
+//     //writer.add_namespace("Windows.UI");
+//     writer.add_namespace("Windows.Foundation.Collections");
+//     let output = writer.write();
+// }
 
 import!(
     dependencies
@@ -8,10 +17,6 @@ import!(
 );
 
 use windows::foundation::*;
-
-fn call<'a, T: Into<Param<'a, IStringable>>>(s: T) -> Result<()> {
-    Ok(())
-}
 
 fn main() -> Result<()> {
     let uri = &Uri::create_uri("http://kennykerr.ca")?;
@@ -32,5 +37,9 @@ fn main() -> Result<()> {
     call(&s);
     call(Uri::create_uri("http://kennykerr.ca")?);
 
+    Ok(())
+}
+
+fn call<'a, T: Into<winrt::Param<'a, IStringable>>>(s: T) -> Result<()> {
     Ok(())
 }
