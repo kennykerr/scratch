@@ -1,6 +1,6 @@
-use winmd::*;
 use winrt::*;
 
+//use winmd::*;
 // fn main() {
 
 //     let mut writer = RustWriter::new();
@@ -16,7 +16,7 @@ import!(
         "windows.foundation.collections"
 );
 
-use windows::foundation::collections::*;
+//use windows::foundation::collections::*;
 use windows::foundation::*;
 
 fn main() -> Result<()> {
@@ -33,16 +33,16 @@ fn main() -> Result<()> {
 
     println!("domain: {}", uri.domain()?);
 
-    let v = uri.query_parsed()?;
+    let _v = uri.query_parsed()?;
 
-    call(uri);
+    call(uri)?;
     //call(d);
-    call(&s);
-    call(Uri::create_uri("http://kennykerr.ca")?);
+    call(&s)?;
+    call(Uri::create_uri("http://kennykerr.ca")?)?;
 
     Ok(())
 }
 
-fn call<'a, T: Into<winrt::Param<'a, IStringable>>>(s: T) -> Result<()> {
+fn call<'a, T: Into<winrt::Param<'a, IStringable>>>(_s: T) -> Result<()> {
     Ok(())
 }
