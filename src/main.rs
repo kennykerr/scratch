@@ -42,6 +42,10 @@ fn main() -> Result<()> {
     call(&s)?;
     call(Uri::create_uri("http://kennykerr.ca")?)?;
 
+    let o: Object = s.query();
+    let s: IStringable = o.query();
+    println!("o: {}", s.to_string()?);
+
     Ok(())
 }
 
