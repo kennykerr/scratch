@@ -4,7 +4,7 @@
 // fn main() {
 
 //     let mut writer = RustWriter::new();
-//     //writer.add_namespace("Windows.UI");
+//     //writer.add_namespace(""windows.ui.composition"");
 //     writer.add_namespace("Windows.Foundation.Collections");
 //     let output = writer.write();
 // }
