@@ -1,4 +1,4 @@
-use winrt::*;
+//use winrt::*;
 
 //use winmd::*;
 // fn main() {
@@ -9,7 +9,7 @@ use winrt::*;
 //     let output = writer.write();
 // }
 
-import!(
+winrt::import!(
     dependencies
         "os"
     modules
@@ -20,8 +20,9 @@ import!(
 
 //use windows::foundation::collections::*;
 use windows::foundation::*;
+use winrt::QueryType;
 
-fn main() -> Result<()> {
+fn main() -> winrt::Result<()> {
     let uri = &Uri::create_uri("http://kennykerr.ca")?;
     println!("domain: {}", uri.domain()?);
 
@@ -38,17 +39,18 @@ fn main() -> Result<()> {
     let _v = uri.query_parsed()?;
 
     call(uri)?;
+    call(uri.clone())?;
     //call(d);
     call(&s)?;
     call(Uri::create_uri("http://kennykerr.ca")?)?;
 
-    let o: Object = s.query();
+    let o: winrt::Object = s.query();
     let s: IStringable = o.query();
     println!("o: {}", s.to_string()?);
 
     Ok(())
 }
 
-fn call<'a, T: Into<winrt::Param<'a, IStringable>>>(_s: T) -> Result<()> {
+fn call<'a, T: Into<winrt::Param<'a, IStringable>>>(_s: T) -> winrt::Result<()> {
     Ok(())
 }
