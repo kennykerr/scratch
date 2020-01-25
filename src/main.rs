@@ -18,7 +18,7 @@ winrt::import!(
         "windows.data.json"
 );
 
-//use windows::foundation::collections::*;
+use windows::foundation::collections::*;
 use windows::foundation::*;
 use winrt::QueryType;
 
@@ -47,6 +47,13 @@ fn main() -> winrt::Result<()> {
     let o: winrt::Object = s.query();
     let s: IStringable = o.query();
     println!("o: {}", s.to_string()?);
+
+    unsafe { 
+        let v: IVector::<i32> = std::mem::zeroed();
+        if false {
+        v.at(123);
+        }
+     }
 
     Ok(())
 }
