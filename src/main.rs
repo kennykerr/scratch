@@ -15,7 +15,7 @@ winrt::import!(
     modules
         "windows.ui"
         "windows.foundation.collections"
-        //"windows.data.json"
+        "windows.data.json"
 );
 
 //use windows::foundation::collections::*;
