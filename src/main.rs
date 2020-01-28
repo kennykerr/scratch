@@ -36,12 +36,13 @@ fn main() -> winrt::Result<()> {
     {
         let object = PropertyValue::create_string("hello")?;
         let pv : IPropertyValue = object.query();
-        let value = pv.string()?;
+        let value = pv.get_string()?;
         println!("pv {}", value);
     }
 
     {
-        
+        let object = PropertyValue::create_u_int32_array(&[1,2,3])?;
+        let pv : IPropertyValue = object.query();
     }
 
     // //let o: Object = s.into();
