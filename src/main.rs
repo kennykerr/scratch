@@ -33,12 +33,12 @@ fn main() -> winrt::Result<()> {
      println!("stringable: {}", value);
     }
 
-    // {
-    //     let boxed = PropertyValue::create_string("hello");
-    //     let pv : IPropertyValue = boxed.into();
-    //     let value = pv.string();
-    //     println!("pv {}", value);
-    // }
+    {
+        let boxed = PropertyValue::create_string("hello")?;
+        let pv : IPropertyValue = boxed.into();
+        let value = pv.string()?;
+        println!("pv {}", value);
+    }
 
     // //let o: Object = s.into();
     // //let tn = o.type_name()?;
