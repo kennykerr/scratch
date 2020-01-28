@@ -1,11 +1,8 @@
-//use winrt::*;
+// use winmd::*;
 
-//use winmd::*;
 // fn main() {
-
 //     let mut writer = RustWriter::new();
-//     //writer.add_namespace(""windows.ui.composition"");
-//     writer.add_namespace("Windows.Foundation.Collections");
+//     writer.add_namespace("windows.foundation");
 //     let output = writer.write();
 // }
 
@@ -23,16 +20,16 @@ use windows::foundation::*;
 use winrt::*;
 
 fn main() -> winrt::Result<()> {
-    // let uri = &Uri::create_uri("http://kennykerr.ca")?;
-    // println!("domain: {}", uri.domain()?);
+     let uri = &Uri::create_uri("http://kennykerr.ca")?;
+     println!("domain: {}", uri.domain()?);
 
-    // let d: IUriRuntimeClass = uri.into();
-    // println!("domain: {}", d.domain()?);
-    // println!("port: {}", d.port()?);
+     let d: IUriRuntimeClass = uri.into();
+     println!("domain: {}", d.domain()?);
+     println!("port: {}", d.port()?);
 
-    // let s: IStringable = uri.into();
-    // let value = s.to_string()?;
-    // println!("stringable: {}", value);
+     let s: IStringable = uri.into();
+     let value = s.to_string()?;
+     println!("stringable: {}", value);
 
     // //let o: Object = s.into();
     // //let tn = o.type_name()?;
