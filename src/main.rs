@@ -23,7 +23,6 @@ use windows::foundation::*;
 use winrt::*;
 
 fn main() -> winrt::Result<()> {
-
     let uri = &Uri::create_uri("http://kennykerr.ca")?;
     println!("domain: {}", uri.domain()?);
 
@@ -39,7 +38,7 @@ fn main() -> winrt::Result<()> {
     //let tn = o.type_name()?;
 
     unsafe {
-        type vcall = extern "system" fn (winrt :: RawPtr, * mut winrt :: RawPtr,) -> winrt :: ErrorCode;
+        type vcall = extern "system" fn(winrt::RawPtr, *mut winrt::RawPtr) -> winrt::ErrorCode;
         let abi = s.abi() as *const *const vcall;
         // Or the preceding two lines in one:
         // let abi = s.abi() as *const *const extern "system" fn (winrt :: RawPtr, * mut winrt :: RawPtr,) -> winrt :: ErrorCode;
@@ -69,12 +68,12 @@ fn main() -> winrt::Result<()> {
     let s: IStringable = o.query();
     println!("o: {}", s.to_string()?);
 
-    unsafe { 
-        let v: IVector::<i32> = std::mem::zeroed();
+    unsafe {
+        let v: IVector<i32> = std::mem::zeroed();
         if false {
-        v.at(123);
+            v.at(123);
         }
-     }
+    }
 
     Ok(())
 }
