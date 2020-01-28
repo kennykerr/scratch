@@ -20,6 +20,7 @@ use windows::foundation::*;
 use winrt::*;
 
 fn main() -> winrt::Result<()> {
+    {
      let uri = &Uri::create_uri("http://kennykerr.ca")?;
      println!("domain: {}", uri.domain()?);
 
@@ -30,6 +31,14 @@ fn main() -> winrt::Result<()> {
      let s: IStringable = uri.into();
      let value = s.to_string()?;
      println!("stringable: {}", value);
+    }
+
+    // {
+    //     let boxed = PropertyValue::create_string("hello");
+    //     let pv : IPropertyValue = boxed.into();
+    //     let value = pv.string();
+    //     println!("pv {}", value);
+    // }
 
     // //let o: Object = s.into();
     // //let tn = o.type_name()?;
