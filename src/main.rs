@@ -34,10 +34,14 @@ fn main() -> winrt::Result<()> {
     }
 
     {
-        let boxed = PropertyValue::create_string("hello")?;
-        let pv : IPropertyValue = boxed.into();
+        let object = PropertyValue::create_string("hello")?;
+        let pv : IPropertyValue = object.query();
         let value = pv.string()?;
         println!("pv {}", value);
+    }
+
+    {
+        
     }
 
     // //let o: Object = s.into();
