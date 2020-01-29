@@ -100,6 +100,6 @@ fn main() -> winrt::Result<()> {
     Ok(())
 }
 
-fn call<'a, T: Into<winrt::Param<'a, IStringable>>>(_s: T) -> winrt::Result<()> {
-    Ok(())
-}
+// fn call<'a, T: Into<winrt::Param<'a, IStringable>>>(_s: T) -> winrt::Result<()> {
+//     Ok(())
+// }
