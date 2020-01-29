@@ -18,12 +18,11 @@ winrt::import!(
         //"windows.data.json"
 );
 
-use winrt::*;
-use windows::foundation::*;
 use windows::foundation::collections::*;
+use windows::foundation::*;
+use winrt::*;
 
 fn main() -> winrt::Result<()> {
-
     {
         let uri = Uri::create_uri("http://kennykerr.ca")?;
         let decoder = uri.query_parsed()?;
@@ -63,9 +62,7 @@ fn main() -> winrt::Result<()> {
         }
     }
 
-    {
-
-    }
+    {}
 
     // //let o: Object = s.into();
     // //let tn = o.type_name()?;
