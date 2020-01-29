@@ -18,11 +18,20 @@ winrt::import!(
         //"windows.data.json"
 );
 
-//use windows::foundation::collections::*;
-use windows::foundation::*;
 use winrt::*;
+use windows::foundation::*;
+use windows::foundation::collections::*;
 
 fn main() -> winrt::Result<()> {
+
+    {
+        let uri = Uri::create_uri("http://kennykerr.ca")?;
+        let decoder = uri.query_parsed()?;
+
+        // TODO: need generic guids!
+        // let v : IVectorView::<IWwwFormUrlDecoderEntry> = decoder.into();
+    }
+
     {
         let uri = &Uri::create_uri("http://kennykerr.ca")?;
         println!("domain: {}", uri.domain()?);
@@ -52,6 +61,10 @@ fn main() -> winrt::Result<()> {
         for i in array.as_slice() {
             println!("a: {}", i);
         }
+    }
+
+    {
+
     }
 
     // //let o: Object = s.into();
