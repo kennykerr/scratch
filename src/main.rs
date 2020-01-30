@@ -25,6 +25,7 @@ use winrt::*;
 fn main() -> winrt::Result<()> {
     {
         println!("type_signature: {}", AsyncStatus::type_signature());
+        assert!(AsyncStatus::default() == AsyncStatus::Canceled);
     }
 
     {
