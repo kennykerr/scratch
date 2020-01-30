@@ -24,6 +24,10 @@ use winrt::*;
 
 fn main() -> winrt::Result<()> {
     {
+        println!("type_signature: {}", AsyncStatus::type_signature());
+    }
+
+    {
         let uri = Uri::create_uri("http://kennykerr.ca")?;
         let decoder = uri.query_parsed()?;
 
