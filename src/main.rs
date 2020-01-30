@@ -2,7 +2,7 @@
 
 // fn main() {
 //     let mut writer = RustWriter::new();
-//     writer.add_namespace("windows.foundation");
+//     writer.add_namespace("windows.foundation.collections");
 //     let output = writer.write();
 // }
 
