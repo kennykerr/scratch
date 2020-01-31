@@ -22,29 +22,7 @@ use windows::foundation::collections::*;
 use windows::foundation::*;
 use winrt::*;
 
-const fn build_type_signature() -> [u8; 16] {
-    // build string dynamically
-    let mut buffer : [u8; 32] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-
-    buffer[4] = 4;
-    buffer[8] = 8;
-    buffer[12] = 12;
-
-    buffer[..16]
-}
-
-
-fn type_signature() -> &'static [u8] {
-    static value: [u8; 16] = build_type_signature();
-    &value
-}
-
 fn main() -> winrt::Result<()> {
-
-    {
-       println!("const type_signature [{:?}]", type_signature());
-    }
-
     {
         println!("Point type_signature: {}", Point::type_signature());
     }
