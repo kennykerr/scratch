@@ -22,20 +22,12 @@ use windows::foundation::collections::*;
 use windows::foundation::*;
 use winrt::*;
 
-// struct Thing<T: TypeSignature> {
-//     __0: std::marker::PhantomData::<T>,
-// }
-
-// // make_type_signature should be function proc macro so we can build up the static string
-
-// impl<T: TypeSignature> TypeSignature for Thing<T> {
-//     fn type_signature() -> &'static str {
-//         static signature: String = Self::make_type_signature();
-//         &signature
-//     }
-// }
-
 fn main() -> winrt::Result<()> {
+
+    {
+        println!("Point type_signature: {}", Point::type_signature());
+    }
+
     {
         println!("type_signature: {}", AsyncStatus::type_signature());
         assert!(AsyncStatus::default() == AsyncStatus::Canceled);
