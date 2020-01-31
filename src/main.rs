@@ -24,11 +24,6 @@ use winrt::*;
 
 fn main() -> winrt::Result<()> {
     {
-        println!("Point type_signature: {}", Point::type_signature());
-    }
-
-    {
-        println!("type_signature: {}", AsyncStatus::type_signature());
         assert!(AsyncStatus::default() == AsyncStatus::Canceled);
     }
 
