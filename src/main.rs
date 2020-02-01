@@ -32,7 +32,7 @@ fn main() -> winrt::Result<()> {
         let decoder = uri.query_parsed()?;
 
         // TODO: need generic guids!
-        // let v : IVectorView::<IWwwFormUrlDecoderEntry> = decoder.into();
+        let v : IVectorView::<IWwwFormUrlDecoderEntry> = decoder.into();
     }
 
     {
