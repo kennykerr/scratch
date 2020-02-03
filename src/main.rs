@@ -22,6 +22,23 @@ use windows::foundation::collections::*;
 use windows::foundation::*;
 use winrt::*;
 
+// impl QueryType for IVectorView<IWwwFormUrlDecoderEntry> {
+
+// }
+
+// impl QueryType for IVectorView<IWwwFormUrlDecoderEntry> {
+//     fn type_guid() -> &'static winrt::Guid {
+//         static GUID: winrt::Guid = winrt::Guid::from_values(
+//             // b1f00d3b-1f06-5117-93ea-2a0d79116701
+//             0xb1f00d3b,
+//             0x1f06,
+//             0x5117,
+//             &[0x93, 0xea, 0x2a, 0x0d, 0x79, 0x11, 0x67, 0x01],
+//         );
+//         &GUID
+//     }
+// }
+
 fn main() -> winrt::Result<()> {
     {
         assert!(AsyncStatus::default() == AsyncStatus::Canceled);
