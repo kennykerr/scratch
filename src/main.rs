@@ -13,12 +13,12 @@ winrt::import!(
         //"windows.graphics.directx"
         //"windows.graphics.effects"
         //"windows.ui"
-        "windows.foundation.collections"
+        "windows.foundation"
         //"windows.foundation.numerics"
         //"windows.data.json"
 );
 
-use windows::foundation::collections::*;
+//use windows::foundation::collections::*;
 use windows::foundation::*;
 use winrt::*;
 
@@ -51,8 +51,8 @@ fn main() -> winrt::Result<()> {
         assert!(!decoder.is_empty());
 
         // TODO: need generic guids!
-        let v : IVectorView::<IWwwFormUrlDecoderEntry> = decoder.into();
-        assert!(v.is_empty());
+        //let v : IVectorView::<IWwwFormUrlDecoderEntry> = decoder.into();
+        //assert!(v.is_empty());
     }
 
     {
