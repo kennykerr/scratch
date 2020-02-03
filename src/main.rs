@@ -39,6 +39,22 @@ use winrt::*;
 //     }
 // }
 
+
+fn c() -> Option<u32> {
+    Some(123)
+}
+
+fn b() -> Option<u32> {
+    let v = c()?;
+    Some(v)
+}
+
+
+fn a() -> Option<u32> {
+    let v = b()?;
+    Some(v)
+}
+
 fn main() -> winrt::Result<()> {
     {
         assert!(AsyncStatus::default() == AsyncStatus::Canceled);
