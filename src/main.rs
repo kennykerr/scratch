@@ -29,10 +29,13 @@ fn main() -> winrt::Result<()> {
 
     {
         let uri = Uri::create_uri("http://kennykerr.ca")?;
+        assert!(!uri.is_empty());
         let decoder = uri.query_parsed()?;
+        assert!(!decoder.is_empty());
 
         // TODO: need generic guids!
         let v : IVectorView::<IWwwFormUrlDecoderEntry> = decoder.into();
+        assert!(v.is_empty());
     }
 
     {
