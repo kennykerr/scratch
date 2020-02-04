@@ -39,7 +39,6 @@ use winrt::*;
 //     }
 // }
 
-
 fn c() -> Option<u32> {
     Some(123)
 }
@@ -48,7 +47,6 @@ fn b() -> Option<u32> {
     let v = c()?;
     Some(v)
 }
-
 
 fn a() -> Option<u32> {
     let v = b()?;
@@ -67,7 +65,7 @@ fn main() -> winrt::Result<()> {
         assert!(!decoder.is_empty());
 
         // TODO: need generic guids!
-        let v : IVectorView::<IWwwFormUrlDecoderEntry> = decoder.into();
+        let v: IVectorView<IWwwFormUrlDecoderEntry> = decoder.into();
         assert!(v.is_empty());
     }
 
@@ -82,6 +80,8 @@ fn main() -> winrt::Result<()> {
         let s: IStringable = uri.into();
         let value = s.to_string()?;
         println!("stringable: {}", value);
+
+        println!("QI stringable: {}", uri.to_string()?);
     }
 
     {
