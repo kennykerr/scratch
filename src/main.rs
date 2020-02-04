@@ -12,7 +12,7 @@ winrt::import!(
     modules
         //"windows.graphics.directx"
         //"windows.graphics.effects"
-        "windows.ui"
+        //"windows.ui"
         "windows.foundation.collections"
         //"windows.foundation.numerics"
         //"windows.data.json"
