@@ -1,9 +1,17 @@
 // use winmd::*;
 
 // fn main() {
-//     let mut writer = RustWriter::new();
-//     writer.add_namespace("windows.foundation.collections");
-//     let output = writer.write();
+//     let r = Reader::from_os().unwrap();
+//     let class = r.resolve("Windows.AI.MachineLearning.Preview.LearningModelBindingPreview");
+
+//     for attribute in class.attributes(&r) {
+//         let (_, name) = attribute.name(&r);
+//         println!("{}", name);
+
+//         if name == "ActivatableAttribute" {
+//             let args = attribute.arguments(&r);
+//         }
+//     }
 // }
 
 winrt::import!(
