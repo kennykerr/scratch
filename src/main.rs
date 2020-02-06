@@ -25,7 +25,7 @@ winrt::import!(
         "os"
     modules
         "windows.foundation.collections"
-        //"windows.ui.composition"
+        "windows.ui.composition"
 );
 
 use windows::foundation::collections::*;
