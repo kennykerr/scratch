@@ -69,8 +69,8 @@ fn main() -> winrt::Result<()> {
     }
 
     {
-        let uri = Uri::create_uri("http://kennykerr.ca")?;
-        //let ob: Object = uri.into();
+        let uri = &Uri::create_uri("http://kennykerr.ca")?;
+        let ob: Object = uri.into();
 
         assert!(!uri.is_empty());
         let decoder = uri.query_parsed()?;
