@@ -24,13 +24,14 @@ winrt::import!(
     dependencies
         "os"
     modules
-        "windows.foundation.collections"
         "windows.ui.composition"
+        "windows.web.syndication"
+        "windows.foundation.collections"
 );
 
-use windows::foundation::collections::*;
-use windows::foundation::*;
 use winrt::*;
+use windows::foundation::*;
+use windows::foundation::collections::*;
 
 // // impl QueryType for IVectorView<IWwwFormUrlDecoderEntry> {
 
@@ -171,6 +172,6 @@ fn main() -> winrt::Result<()> {
     Ok(())
 }
 
-// // fn call<'a, T: Into<winrt::Param<'a, IStringable>>>(_s: T) -> winrt::Result<()> {
-// //     Ok(())
-// // }
+// // // fn call<'a, T: Into<winrt::Param<'a, IStringable>>>(_s: T) -> winrt::Result<()> {
+// // //     Ok(())
+// // // }
