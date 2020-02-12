@@ -69,14 +69,15 @@ fn main() -> winrt::Result<()> {
         assert!(AsyncStatus::default() == AsyncStatus::Canceled);
     }
 
-    // {
-    //     use windows::ui::*;
-    //     use windows::ui::composition::*;
-
-    //     let compositor = Compositor::new()?;
-    //     let visual = compositor.create_sprite_visual()?;
-    //     visual.set_brush(&compositor.create_color_brush_with_color(&Colors::red()?)?)?;
-    // }
+    {
+        use windows::ui::*;
+        use windows::ui::composition::*;
+         
+        //let compositor = Compositor::new()?;
+        //let visual = compositor.create_sprite_visual()?;
+        //visual.set_brush(&compositor.create_color_brush_with_color(&Colors::red()?)?)?;
+        //visual.set_offset({0.0, 0.0, 0.0});
+    }
 
     {
         let uri = &Uri::create_uri("http://kennykerr.ca")?;
