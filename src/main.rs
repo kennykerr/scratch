@@ -70,22 +70,20 @@ fn main() -> winrt::Result<()> {
         assert!(AsyncStatus::default() == AsyncStatus::Canceled);
     }
 
+    if false
     {
-        use windows::ui::*;
         use windows::foundation::numerics::*;
+        use windows::ui::*;
         use windows::ui::composition::*;
+
+        let compositor = Compositor::new()?;
+        let visual = compositor.create_sprite_visual()?;
+
+        let brush = compositor.create_color_brush_with_color(Colors::red()?)?;
+        visual.set_brush(brush)?;
         
-        // Compilation testing - Compositor doesn't work without dispatcher queue...
-        if false {
-            let compositor = Compositor::new()?;
-            let visual = compositor.create_sprite_visual()?;
-            let brush = compositor.create_color_brush_with_color(&Colors::red()?)?;
-            let brush = compositor.create_color_brush_with_color(Colors::red()?)?;
-            visual.set_offset(&Vector3{x:0,y:0,z:0})?;
-            visual.set_offset(Vector3{x:0,y:0,z:0})?;
-            visual.set_brush(&compositor.create_color_brush_with_color(Colors::red()?)?)?;
-            visual.set_brush(compositor.create_color_brush_with_color(Colors::red()?)?)?;
-        }
+        visual.set_offset(Vector3{x:1,y:2,z:3})?;
+        assert!(visual.offset()? == Vector3{x:1,y:2,z:3});
     }
 
     {
