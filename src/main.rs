@@ -74,11 +74,14 @@ fn main() -> winrt::Result<()> {
         use windows::ui::*;
         use windows::foundation::numerics::*;
         use windows::ui::composition::*;
-         
-        //let compositor = Compositor::new()?;
-        //let visual = compositor.create_sprite_visual()?;
-        //visual.set_brush(&compositor.create_color_brush_with_color(&Colors::red()?)?)?;
-        //visual.set_offset(&Vector3{x:0,y:0,z:0});
+        
+        // Compilation testing - Compositor doesn't work without dispatcher queue...
+        if false {
+        let compositor = Compositor::new()?;
+        let visual = compositor.create_sprite_visual()?;
+        visual.set_brush(&compositor.create_color_brush_with_color(&Colors::red()?)?.into())?;
+        visual.set_offset(&Vector3{x:0,y:0,z:0})?;
+        }
     }
 
     {
