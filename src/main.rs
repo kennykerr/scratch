@@ -30,7 +30,7 @@ winrt::import!(
         "windows.foundation.numerics"
 );
 
-use windows::foundation::collections::*;
+//use windows::foundation::collections::*;
 use windows::foundation::*;
 use winrt::*;
 
