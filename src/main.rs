@@ -70,20 +70,19 @@ fn main() -> winrt::Result<()> {
         assert!(AsyncStatus::default() == AsyncStatus::Canceled);
     }
 
-    if false
-    {
+    if false {
         use windows::foundation::numerics::*;
-        use windows::ui::*;
         use windows::ui::composition::*;
+        use windows::ui::*;
 
         let compositor = Compositor::new()?;
         let visual = compositor.create_sprite_visual()?;
 
         let brush = compositor.create_color_brush_with_color(Colors::red()?)?;
         visual.set_brush(brush)?;
-        
-        visual.set_offset(Vector3{x:1,y:2,z:3})?;
-        assert!(visual.offset()? == Vector3{x:1,y:2,z:3});
+
+        visual.set_offset(Vector3 { x: 1, y: 2, z: 3 })?;
+        assert!(visual.offset()? == Vector3 { x: 1, y: 2, z: 3 });
     }
 
     {
