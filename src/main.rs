@@ -67,6 +67,13 @@ use winrt::*;
 // }
 
 fn main() -> winrt::Result<()> {
+
+    // {
+    //     let a = GuidHelper::create_new_guid();
+    //     let b = GuidHelper::create_new_guid();
+    //     assert!(!GuidHelper::equals(a, b));
+    //     assert!(GuidHelper::equals(a, a));
+    // }
     {
         assert!(AsyncStatus::default() == AsyncStatus::Canceled);
     }
