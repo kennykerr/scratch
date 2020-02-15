@@ -67,7 +67,6 @@ use winrt::*;
 // }
 
 fn main() -> winrt::Result<()> {
-
     {
         let a = GuidHelper::create_new_guid()?;
         let b = GuidHelper::create_new_guid()?;
@@ -90,8 +89,19 @@ fn main() -> winrt::Result<()> {
         let brush = compositor.create_color_brush_with_color(Colors::red()?)?;
         visual.set_brush(brush)?;
 
-        visual.set_offset(Vector3 { x: 1.0, y: 2.0, z: 3.0 })?;
-        assert!(visual.offset()? == Vector3 { x: 1.0, y: 2.0, z: 3.0 });
+        visual.set_offset(Vector3 {
+            x: 1.0,
+            y: 2.0,
+            z: 3.0,
+        })?;
+        assert!(
+            visual.offset()?
+                == Vector3 {
+                    x: 1.0,
+                    y: 2.0,
+                    z: 3.0
+                }
+        );
     }
 
     {
