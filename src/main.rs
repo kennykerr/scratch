@@ -28,11 +28,13 @@ winrt::import!(
         "windows.web.syndication"
         "windows.foundation.collections"
         "windows.foundation.numerics"
+        "windows.graphics.capture"
         //"windows.ui.xaml"
 );
 
 //use windows::foundation::collections::*;
 use windows::foundation::*;
+use windows::graphics::capture::*;
 use winrt::*;
 
 // // impl QueryType for IVectorView<IWwwFormUrlDecoderEntry> {
@@ -67,6 +69,9 @@ use winrt::*;
 // }
 
 fn main() -> winrt::Result<()> {
+    println!("supported: {}", GraphicsCaptureSession::is_supported()?);
+
+
     {
         let a = GuidHelper::create_new_guid()?;
         let b = GuidHelper::create_new_guid()?;
