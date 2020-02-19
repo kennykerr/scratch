@@ -71,7 +71,6 @@ use winrt::*;
 fn main() -> winrt::Result<()> {
     println!("supported: {}", GraphicsCaptureSession::is_supported()?);
 
-
     {
         let a = GuidHelper::create_new_guid()?;
         let b = GuidHelper::create_new_guid()?;
