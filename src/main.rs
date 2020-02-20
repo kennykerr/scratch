@@ -29,7 +29,7 @@ winrt::import!(
         "windows.foundation.collections"
         "windows.foundation.numerics"
         "windows.graphics.capture"
-        //"windows.ui.xaml"
+        "windows.ui.xaml"
 );
 
 use windows::foundation::collections::*;
