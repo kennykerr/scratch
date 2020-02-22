@@ -29,10 +29,21 @@ winrt::import!(
         "windows.foundation.collections"
         "windows.foundation.numerics"
         "windows.graphics.capture"
-        "windows.ui.xaml.controls" // - something broken with .controls (but not xaml)
-        "windows.application_model"
-        "windows.ui.core"
+        "windows.application_model.data_transfer"
 );
+
+// These namespaces produce a 50mb dump.rs
+    // "windows.ui.composition"
+    // "windows.web.syndication"
+    // "windows.foundation.collections"
+    // "windows.foundation.numerics"
+    // "windows.graphics.capture"
+    // "windows.ui.xaml.controls.primitives"
+    // "windows.ui.xaml.controls.maps"
+    // "windows.ui.xaml.automation.peers"
+    // "windows.devices.point_of_service"
+    // "windows.application_model"
+    // "windows.ui.core"
 
 use windows::foundation::collections::*;
 use windows::foundation::*;
@@ -123,6 +134,18 @@ fn main() -> winrt::Result<()> {
         for i in array.as_slice() {
             println!("a: {}", i);
         }
+    }
+
+    {
+        unsafe { CoInitializeEx(0, 2) };
+
+        use windows::application_model::data_transfer::*;
+
+        let content = DataPackage::new()?;
+        content.set_text("Rust/WinRT")?;
+
+        Clipboard::set_content(content)?;
+        Clipboard::flush()?;
     }
 
     Ok(())
