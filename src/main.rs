@@ -1,50 +1,152 @@
+// use winmd::*;
+
+// fn main() {
+//     let mut w = RustWriter::new();
+//     w.add_namespace("windows.foundation.collections");
+//     w.write();
+// }
+
+// // fn main() {
+// //     let r = Reader::from_os().unwrap();
+// //     let class = r.resolve("Windows.AI.MachineLearning.Preview.LearningModelBindingPreview");
+
+// //     for attribute in class.attributes(&r) {
+// //         let (_, name) = attribute.name(&r);
+// //         println!("{}", name);
+
+// //         if name == "ActivatableAttribute" {
+// //             let args = attribute.arguments(&r);
+// //         }
+// //     }
+// // }
+
 winrt::import!(
     dependencies
         "os"
     modules
-        "windows.ui"
-        //"windows.foundation"
+        "windows.ui.composition"
+        "windows.web.syndication"
+        "windows.foundation.collections"
+        "windows.foundation.numerics"
+        "windows.graphics.capture"
+        "windows.application_model.data_transfer"
 );
 
-use windows::ui::*;
+// These namespaces produce a 50mb dump.rs
+    // "windows.ui.composition"
+    // "windows.web.syndication"
+    // "windows.foundation.collections"
+    // "windows.foundation.numerics"
+    // "windows.graphics.capture"
+    // "windows.ui.xaml.controls.primitives"
+    // "windows.ui.xaml.controls.maps"
+    // "windows.ui.xaml.automation.peers"
+    // "windows.devices.point_of_service"
+    // "windows.application_model"
+    // "windows.ui.core"
+
+use windows::foundation::collections::*;
+use windows::foundation::*;
+use windows::graphics::capture::*;
+use winrt::*;
 
 fn main() -> winrt::Result<()> {
-    //test_reader();
+    println!("supported: {}", GraphicsCaptureSession::is_supported()?);
 
-    let a = winrt::String::new();
-    assert!(a.is_empty());
-    assert!(a.len() == 0);
-    assert!(a.as_chars().len() == 0);
+    {
+        let a = GuidHelper::create_new_guid()?;
+        let b = GuidHelper::create_new_guid()?;
+        // TODO: the ABI for these aren't projecting correctly - not sure why they don't AV
+        assert!(!GuidHelper::equals(a, b)?);
+        assert!(GuidHelper::equals(a, a)?);
+    }
+    {
+        assert!(AsyncStatus::default() == AsyncStatus::Canceled);
+    }
 
-    let hello = winrt::String::from("Hello");
-    assert!(!hello.is_empty());
-    assert!(hello.len() == 5);
+    if false {
+        use windows::foundation::numerics::*;
+        use windows::ui::composition::*;
+        use windows::ui::*;
 
-    let color = Colors::red()?;
-    println!("{:?}", color);
-    assert!(color == ColorHelper::from_argb(255, 255, 0, 0)?);
-    println!("woot!");
+        let compositor = Compositor::new()?;
+        let visual = compositor.create_sprite_visual()?;
+
+        let brush = compositor.create_color_brush_with_color(Colors::red()?)?;
+        visual.set_brush(brush)?;
+
+        visual.set_offset(Vector3 {
+            x: 1.0,
+            y: 2.0,
+            z: 3.0,
+        })?;
+        assert!(
+            visual.offset()?
+                == Vector3 {
+                    x: 1.0,
+                    y: 2.0,
+                    z: 3.0
+                }
+        );
+    }
+
+    {
+        let uri = &Uri::create_uri("http://kennykerr.ca")?;
+        let _ob: Object = uri.into();
+
+        assert!(!uri.is_empty());
+        let decoder = uri.query_parsed()?;
+        assert!(!decoder.is_empty());
+
+        // TODO: need generic guids!
+        let v: IVectorView<IWwwFormUrlDecoderEntry> = decoder.into();
+        assert!(v.is_empty());
+    }
+
+    {
+        let uri = &Uri::create_uri("http://kennykerr.ca")?;
+        println!("domain: {}", uri.domain()?);
+
+        let d: IUriRuntimeClass = uri.into();
+        println!("domain: {}", d.domain()?);
+        println!("port: {}", d.port()?);
+
+        let s: IStringable = uri.into();
+        let value = s.to_string()?;
+        println!("stringable: {}", value);
+
+        println!("QI stringable: {}", uri.to_string()?);
+    }
+
+    {
+        let object = PropertyValue::create_string("hello")?;
+        let pv: IPropertyValue = object.query();
+        let value = pv.get_string()?;
+        println!("pv {}", value);
+    }
+
+    {
+        let object = PropertyValue::create_u_int32_array(&[1, 2, 3])?;
+        let pv: IPropertyValue = object.query();
+        let mut array = Array::new();
+        pv.get_u_int32_array(&mut array)?;
+
+        for i in array.as_slice() {
+            println!("a: {}", i);
+        }
+    }
+
+    {
+        unsafe { CoInitializeEx(0, 2) };
+
+        use windows::application_model::data_transfer::*;
+
+        let content = DataPackage::new()?;
+        content.set_text("Rust/WinRT")?;
+
+        Clipboard::set_content(content)?;
+        Clipboard::flush()?;
+    }
 
     Ok(())
 }
-
-// fn test_reader() {
-//     let reader = winmd::Reader::from_files(&[
-//         r"C:\Windows\System32\WinMetadata\Windows.Foundation.winmd".to_string(),
-//     ])
-//     .unwrap();
-//     let t = reader
-//         .find_type("Windows.Foundation.IAsyncOperationWithProgress`2")
-//         .unwrap();
-//     let g = t.generics();
-
-//     if g.is_empty() {
-//         println!("{} is not generic", t.name());
-//     } else {
-//         println!("{} is generic", t.name());
-
-//         for param in g {
-//             print!("{}, ", param.name());
-//         }
-//     }
-// }
