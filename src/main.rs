@@ -53,6 +53,17 @@ use winrt::*;
 fn main() -> winrt::Result<()> {
     println!("supported: {}", GraphicsCaptureSession::is_supported()?);
 
+{
+    use windows::foundation::*;
+ 
+let uri = Uri::create_uri("https://kennykerr.ca")?;
+assert!(uri.domain()? == "kennykerr.ca");
+assert!(uri.port()? == 443);
+assert!(uri.to_string()? == "https://kennykerr.ca/");
+
+println!("port {}", uri.port()?);
+}
+
     {
         let a = GuidHelper::create_new_guid()?;
         let b = GuidHelper::create_new_guid()?;
