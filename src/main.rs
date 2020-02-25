@@ -79,7 +79,7 @@ fn call2(v: &Rc<dyn IVector<Button>>) {
 }
 
 fn call3(v: &Rc<dyn IVector<dyn IStringable>>) {
-    // v.get_at(3);
+     v.get_at(3);
 }
 
 fn call4(s: &Rc<dyn IStringable>) {
