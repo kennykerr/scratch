@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2018"
 
 [dependencies]
-winrt = { path = "../winrt-rs" }
-winmd = { path = "../winrt-rs/gen" }
-syn = "1.0"
-quote = "1.0"
-proc-macro2 = "1.0"
+#winrt = { path = "../winrt-rs" }
+#winmd = { path = "../winrt-rs/gen" }
+#syn = "1.0"
+#quote = "1.0"
+#proc-macro2 = "1.0"
