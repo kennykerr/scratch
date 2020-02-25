@@ -6,7 +6,7 @@ import!(
 );
 
 use winrt::*;
-use windows::foundation::*;
+//use windows::foundation::*;
 
 fn main() -> Result<()> {
 
