@@ -17,72 +17,100 @@
 //     Ok(())
 // }
 
-trait RuntimeType { // All WinRT types
-    type ValueType;
-    type AbiType;
+mod winrt {
+    pub trait RuntimeType {
+        type Abi;
+    }
+
+    impl RuntimeType for i32 {
+        type Abi = Self;
+    }
+
+    pub struct Rc<T: ?Sized> {
+        placeholder: std::marker::PhantomData<T>,
+    }
+
+    pub type RawPtr = *mut std::ffi::c_void;
 }
 
-impl RuntimeType for i32 {
-    type ValueType = Self;
-    type AbiType = Self;
+pub mod windows {
+    pub mod foundation {
+        pub struct Button {
+            ptr: crate::winrt::RawPtr,
+        }
+
+        impl crate::winrt::RuntimeType for Button {
+            type Abi = crate::winrt::RawPtr;
+        }
+
+        pub mod abi {
+            struct IStringable {
+                __base : [usize ; 6],
+                to_string : extern "system" fn (crate::winrt::RawPtr, * mut crate::winrt::RawPtr,) -> i32,
+            }
+        }
+
+        pub mod traits {
+            pub trait IStringable {
+                fn to_string(&self) -> String;
+            }
+
+            pub trait IVector<T: crate::winrt::RuntimeType> {
+                fn get_at(&self, index: u32) -> T;
+                fn test(s: &super::IStringable);
+            }
+        }
+
+        pub struct IStringable {
+            ptr: crate::winrt::RawPtr,
+        }
+        pub struct IVector<T: crate::winrt::RuntimeType> {
+            ptr: crate::winrt::RawPtr,
+            placeholder: std::marker::PhantomData<T>,
+        }
+
+        impl crate::winrt::RuntimeType for IStringable {
+            type Abi = crate::winrt::RawPtr;
+        }
+        impl<T: crate::winrt::RuntimeType> crate::winrt::RuntimeType for IVector<T> {
+            type Abi = crate::winrt::RawPtr;
+        }
+
+        impl IStringable {
+            pub fn to_string(&self) -> String {
+                panic!("call abi");
+            }
+        }
+        impl<T: crate::winrt::RuntimeType> IVector<T> {
+            pub fn get_at(&self, _index: u32) -> T {
+                panic!("call abi");
+            }
+        }
+    }
 }
 
-#[derive(PartialEq)]
-struct Button {} // Some WinRT class
+use windows::foundation::*;
 
-impl RuntimeType for Button {
-    type ValueType = Self;
-    type AbiType = usize;
-}
-
-// Represents an interface value type (backed by a COM ptr)
-struct Rc<T: ?Sized> {
-    placeholder: std::marker::PhantomData<T>,
-}
-
-// Some non-generic WinRT interface
-trait IStringable {
-    fn to_string(&self) -> String;
-}
-
-// Some generic WinRT interface
-trait IVector<T: RuntimeType> {
-    fn get_at(&self, index: u32) -> T::ValueType;
-}
-
-impl RuntimeType for dyn IStringable {
-    type ValueType = Rc<Self>;
-    type AbiType = usize;
-}
-impl<T> RuntimeType for dyn IVector<T> {
-    type ValueType = Rc<Self>;
-    type AbiType = usize;
-}
-
-impl IStringable for Rc<dyn IStringable> {
+struct Custom {}
+impl traits::IStringable for Custom {
     fn to_string(&self) -> String {
         panic!("call abi");
     }
 }
-impl<T: RuntimeType> IVector<T> for Rc<dyn IVector<T>> {
-    fn get_at(&self, _index: u32) -> T::ValueType {
-        panic!("call abi");
-    }
-}
 
-fn call1(v: &Rc<dyn IVector<i32>>) {
+fn call1(v: &IVector<i32>) {
     assert!(v.get_at(1) == 0);
 }
 
-fn call2(v: &Rc<dyn IVector<Button>>) {
-    assert!(v.get_at(2) == Button {});
+fn call2(v: &IVector<Button>) {
+    v.get_at(2);
 }
 
-fn call3(v: &Rc<dyn IVector<dyn IStringable>>) {
-     v.get_at(3);
+fn call3(v: &IVector<IStringable>) {
+    v.get_at(3).to_string();
 }
 
-fn call4(s: &Rc<dyn IStringable>) {
+fn call4(s: &IStringable) {
     s.to_string();
 }
 
