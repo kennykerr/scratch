@@ -8,6 +8,14 @@ import!(
 use winrt::*;
 use windows::foundation::*;
 
+struct Thing {}
+
+impl traits::IStringable for Thing {
+    fn to_string(&self) -> Result<HString> {
+        panic!("call abi");
+    }
+}
+
 fn main() -> Result<()> {
 
     let uri = Uri::create_uri("https://kennykerr.ca")?;
