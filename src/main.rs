@@ -5,8 +5,8 @@ import!(
         "windows.foundation.collections"
 );
 
-use winrt::*;
 use windows::foundation::*;
+use winrt::*;
 
 struct Thing {}
 
@@ -17,7 +17,6 @@ impl traits::IStringable for Thing {
 }
 
 fn main() -> Result<()> {
-
     let uri = Uri::create_uri("https://kennykerr.ca")?;
     println!("{}", uri.domain()?);
     println!("{}", uri.to_string()?);
