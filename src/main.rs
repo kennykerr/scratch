@@ -1,140 +1,143 @@
-import!(
-    dependencies
-        "os"
-    modules
-        "windows.foundation.collections"
-        // "windows.ui.composition"
-        // "windows.graphics.effects"
-        // "windows.ui.core"
-        // "windows.system"
-        // "windows.application_model.activation"
-        // "windows.application_model.core"
-        // "windows.application_model.appointments.appointments_provider"
-        // "windows.application_model.background"
-        // "windows.application_model.contacts"
-        // "windows.application_model.contacts.provider"
-        // "windows.storage.streams"
-        // "windows.storage.provider"
-        // "windows.ui.view_management"
-        // "windows.devices.enumeration"
-        // "windows.storage.search"
-);
+trait RuntimeType {
+    type ValueType;
+    type AbiType;
+}
 
-use windows::foundation::*;
-use winrt::*;
+impl RuntimeType for i32 {
+    type ValueType = Self;
+    type AbiType = Self;
+}
 
-struct Thing {}
+pub trait QueryType {
+    fn type_guid() -> i32;
+}
 
-impl traits::IStringable for Thing {
-    fn to_string(&self) -> Result<HString> {
+struct Rc<T: RuntimeType + ?Sized> {
+    placeholder: std::marker::PhantomData<T>,
+}
+
+impl<T: RuntimeType + ?Sized> Rc<T> {
+    fn new() -> Rc<T> {
+        Rc { placeholder: std::marker::PhantomData }
+    }
+}
+
+impl<T: RuntimeType + ?Sized> RuntimeType for Rc<T> {
+    type ValueType = Self;
+    type AbiType = usize;
+}
+
+#[derive(PartialEq)]
+struct Button {}
+impl RuntimeType for Button {
+    type ValueType = Self;
+    type AbiType = usize;
+}
+
+trait IClosable {
+    fn close(&self);
+}
+
+trait IStringable: IClosable {
+    fn to_string(&self) -> String;
+}
+
+impl QueryType for IStringable {
+    fn type_guid() -> i32 {
+        1
+    }
+}
+
+impl RuntimeType for dyn IClosable {
+    type ValueType = Rc<Self>;
+    type AbiType = usize;
+}
+
+impl RuntimeType for dyn IStringable {
+    type ValueType = Rc<Self>;
+    type AbiType = usize;
+}
+
+trait IVector<T: RuntimeType> {
+    fn get_at(&self, index: u32) -> T::ValueType;
+}
+
+impl<T: RuntimeType + ?Sized> RuntimeType for dyn IVector<T> {
+    type ValueType = Rc<Self>;
+    type AbiType = usize;
+}
+
+impl<T: RuntimeType, I: IVector<T> + RuntimeType + ?Sized> IVector<T> for Rc<I> {
+    fn get_at(&self, index: u32) -> T::ValueType {
         panic!("call abi");
     }
 }
 
-fn main() -> Result<()> {
-    let uri = Uri::create_uri("https://kennykerr.ca")?;
-    println!("{}", uri.domain()?);
-    println!("{}", uri.to_string()?);
-
-    Ok(())
+impl Rc<dyn IClosable> {
+    fn close(&self) {
+        panic!("IClosable: call abi directly");
+    }
 }
 
-// mod winrt {
-//     pub trait RuntimeType {
-//         type Abi;
-//     }
+impl<I> IClosable for Rc<I>
+where
+    I: IClosable + RuntimeType + ?Sized,
+{
+    fn close(&self) {
+        panic!("IClosable: call abi via QI");
+    }
+}
 
-//     impl RuntimeType for i32 {
-//         type Abi = Self;
-//     }
+impl<I: IStringable + RuntimeType + ?Sized> IStringable for Rc<I> {
+    fn to_string(&self) -> String {
+        panic!("call abi");
+    }
+}
 
-//     pub struct Rc<T: ?Sized> {
-//         placeholder: std::marker::PhantomData<T>,
-//     }
+impl QueryType for IVector<i32> {
+    fn type_guid() -> i32 {
+        2
+    }
+}
 
-//     pub type RawPtr = *mut std::ffi::c_void;
-// }
+impl QueryType for IVector<Button> {
+    fn type_guid() -> i32 {
+        3
+    }
+}
 
-// pub mod windows {
-//     pub mod foundation {
-//         pub struct Button {
-//             ptr: crate::winrt::RawPtr,
-//             a: abi::IStringable,
-//         }
+impl QueryType for IVector<Rc<dyn IStringable>> {
+    fn type_guid() -> i32 {
+        4
+    }
+}
 
-//         impl crate::winrt::RuntimeType for Button {
-//             type Abi = crate::winrt::RawPtr;
-//         }
+fn call1(v: &Rc<dyn IVector<i32>>) {
+    assert!(v.get_at(0) == 0);
+}
 
-//         mod abi {
-//             pub struct IStringable {
-//                 __base : [usize ; 6],
-//                 to_string : extern "system" fn (crate::winrt::RawPtr, * mut crate::winrt::RawPtr,) -> i32,
-//             }
-//         }
+fn call2(v: &Rc<dyn IVector<Button>>) {
+    assert!(v.get_at(0) == Button {});
+}
 
-//         pub mod traits {
-//             pub trait IStringable {
-//                 fn to_string(&self) -> String;
-//             }
+fn call3(v: &Rc<dyn IVector<Rc<dyn IStringable>>>) {
+    v.get_at(0);
+}
 
-//             pub trait IVector<T: crate::winrt::RuntimeType> {
-//                 fn get_at(&self, index: u32) -> T;
-//                 fn test(s: &super::IStringable);
-//             }
-//         }
+fn call4(s: &Rc<dyn IStringable>) {
+    s.to_string();
+    s.close();
+}
 
-//         pub struct IStringable {
-//             ptr: crate::winrt::RawPtr,
-//         }
-//         pub struct IVector<T: crate::winrt::RuntimeType> {
-//             ptr: crate::winrt::RawPtr,
-//             placeholder: std::marker::PhantomData<T>,
-//         }
+fn call5(s: &Rc<dyn IClosable>) {
+    s.close();
+}
 
-//         impl crate::winrt::RuntimeType for IStringable {
-//             type Abi = crate::winrt::RawPtr;
-//         }
-//         impl<T: crate::winrt::RuntimeType> crate::winrt::RuntimeType for IVector<T> {
-//             type Abi = crate::winrt::RawPtr;
-//         }
+fn main() {
+    assert!(<IStringable as QueryType>::type_guid() == 1);
+    assert!(<IVector<i32> as QueryType>::type_guid() == 2);
+    assert!(<IVector<Button> as QueryType>::type_guid() == 3);
+    assert!(<IVector<Rc<IStringable>> as QueryType>::type_guid() == 4);
 
-//         impl IStringable {
-//             pub fn to_string(&self) -> String {
-//                 panic!("call abi");
-//             }
-//         }
-//         impl<T: crate::winrt::RuntimeType> IVector<T> {
-//             pub fn get_at(&self, _index: u32) -> T {
-//                 panic!("call abi");
-//             }
-//         }
-//     }
-// }
-
-// use windows::foundation::*;
-
-// struct Custom {}
-// impl traits::IStringable for Custom {
-//     fn to_string(&self) -> String {
-//         panic!("call abi");
-//     }
-// }
-
-// fn call1(v: &IVector<i32>) {
-//     assert!(v.get_at(1) == 0);
-// }
-
-// fn call2(v: &IVector<Button>) {
-//     v.get_at(2);
-// }
-
-// fn call3(v: &IVector<IStringable>) {
-//     v.get_at(3).to_string();
-// }
-
-// fn call4(s: &IStringable) {
-//     s.to_string();
-// }
-
-// fn main() {}
+    call5(&Rc::new());
+}
