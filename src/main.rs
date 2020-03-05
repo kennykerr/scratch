@@ -15,3 +15,14 @@ fn main() -> Result<()> {
 
     Ok(())
 }
+
+// use winrt::*;
+
+// fn call<'a, T:Into<Param<'a, Guid>>>(value:T) {
+
+// }
+
+// fn main(){
+//     let g : Guid = Default::default();
+//     call(g);
+// }
