@@ -13,6 +13,9 @@ fn main() -> Result<()> {
     println!("{}", uri.domain()?);
     println!("{}", uri.to_string()?);
 
+    let s: IStringable = uri.into();
+    println!("{}", s.to_string()?);
+
     Ok(())
 }
 
