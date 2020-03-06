@@ -1,5 +1,8 @@
 use windows::foundation::*;
+use windows::foundation::collections::*;
 use winrt::*;
+
+use windows::foundation::traits as wf_traits;
 
 import!(
     dependencies:
@@ -20,19 +23,37 @@ struct Stringable {
     value: String,
 }
 
-impl traits::IStringable for Stringable {
+impl wf_traits::IStringable for Stringable {
     fn to_string(&self) -> Result<HString> {
         Ok((&self.value).into())
     }
 }
 
+// impl TypeGuid for IVectorView<IWwwFormUrlDecoderEntry> {
+//     fn type_guid() -> &'static Guid {
+//         static GUID: Guid = Guid::from_values(
+//             0x00000035,
+//             0x0000,
+//             0x0000,
+//             &[0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46],
+//         );
+//         &GUID
+//     }
+// }
+
 fn main() -> Result<()> {
-    let uri = Uri::create_uri("https://kennykerr.ca")?;
+    let uri = &Uri::create_uri("https://kennykerr.ca")?;
     println!("{}", uri.domain()?);
     println!("{}", uri.to_string()?);
 
     let s: IStringable = uri.into();
     println!("{}", s.to_string()?);
+
+    let decoder = uri.query_parsed()?;
+
+    //let size = decoder.size();
+
+    
 
     Ok(())
 }
