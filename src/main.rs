@@ -1,5 +1,5 @@
-use windows::foundation::*;
 use windows::foundation::collections::*;
+use windows::foundation::*;
 use winrt::*;
 
 use windows::foundation::traits as wf_traits;
@@ -51,9 +51,11 @@ fn main() -> Result<()> {
 
     let decoder = uri.query_parsed()?;
 
+    let o: Object = uri.into();
+
     //let size = decoder.size();
 
-    
+    let g = <IStringable as winrt::TypeGuid>::type_guid();
 
     Ok(())
 }
