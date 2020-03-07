@@ -41,7 +41,13 @@ impl wf_traits::IStringable for Stringable {
 //     }
 // }
 
+use sha1::*;
+
 fn main() -> Result<()> {
+    let hash = Sha1::from("hello world").digest().bytes();
+    println!("{:?}", hash.get(..16));
+
+
     let uri = &Uri::create_uri("https://kennykerr.ca")?;
     println!("{}", uri.domain()?);
     println!("{}", uri.to_string()?);
