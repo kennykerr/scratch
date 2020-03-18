@@ -1,9 +1,28 @@
 use winmd::*;
 
 fn main() {
-    let file = File::new(r"c:\windows\system32\WinMetadata\Windows.Foundation.winmd");
-    let types = file.type_def_table();
-    println!("rows: {}", types.row_count);
+    let reader = Reader::from_os();
+
+    // for def in reader.namespace_types("Windows.Foundation") {
+    //     println!("  {}", def.name());
+    // }
+
+    // let def = reader.resolve_type_name("Windows.Foundation.Uri");
+    // println!("\n{}: {}", def.namespace(), def.name());
+
+    // let def = reader.resolve_type_name("Windows.Foundation.Point");
+    // for field in def.fields() {
+    //     println!("field: {}", field.name());
+    // }
+
+    // let def = reader.resolve_type_name("Windows.UI.Composition.SpriteVisual");
+    // let def = def.extends();
+    // println!("{}.{}", def.namespace(), def.name());
+
+    // for ns in reader.namespaces() {
+    //     println!("{}", ns);
+
+    // }
 }
 
 // use windows::foundation::collections::*;
