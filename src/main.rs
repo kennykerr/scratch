@@ -1,6 +1,7 @@
 use winmd::*;
 
 fn main() {
+
     let reader = Reader::from_os();
 
     // for def in reader.namespace_types("Windows.Foundation") {
