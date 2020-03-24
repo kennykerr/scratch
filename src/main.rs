@@ -27,11 +27,11 @@ fn main() {
     //     }
     // }
 
-    let row = reader.type_def_from_type_name("Windows.Foundation", "Uri");
+    let row = reader.type_def_from_type_name("Windows.Foundation", "Rect");
 
     let info = reader.type_info(row);
 
-    println!("{:?}", info);
+    println!("{:#?}", info);
 
     // for def in reader.namespace_types("Windows.Foundation") {
     //     println!("  {}", def.name());
