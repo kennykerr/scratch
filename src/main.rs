@@ -27,7 +27,7 @@ fn main() {
     //     }
     // }
 
-    let row = reader.type_def_from_type_name("Windows.Foundation", "Rect");
+    let row = reader.type_def_from_type_name("Windows.Foundation", "Uri");
 
     let info = reader.type_info(row);
 
