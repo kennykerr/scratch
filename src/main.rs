@@ -3,33 +3,28 @@ use winmd::*;
 fn main() {
     let reader = Reader::from_os();
 
-    // for ns in reader.namespaces() {
-    //     // println!("namespace {}", ns);
+    for ns in reader.namespaces() {
+        // println!("namespace {}", ns);
 
-    //     // if ns != "Windows.Foundation" {
-    //     //     continue;
-    //     // }
+        // if ns != "Windows.Foundation" {
+        //     continue;
+        // }
 
-    //     for t in reader.namespace_types(ns) {
-    //         println!("type: {}.{}", reader.type_def_namespace(*t), reader.type_def_name(*t));
-    //         match reader.type_info(*t) {
-    //             Type::Interface(info) => println!("  interface {}", info.ident.name),
-    //             Type::Class(info) => println!("  class {}", info.ident.name),
-    //             Type::Struct(info) => println!("  struct {}", info.ident.name),
-    //             Type::Delegate(info) => println!("  delegate {}", info.ident.name),
-    //             Type::Enum(info) => {
-    //                 println!("  enum {}", info.ident.name);
-    //                 // for f in info.fields {
-    //                 //     println!("    {}", f.name);
-    //                 // }
-    //             }
-    //         }
-    //     }
-    // }
+        for t in reader.namespace_types(ns) {
+            println!("type: {:?}", t.name(&reader),);
+            match reader.type_info(*t) {
+                Type::Interface(info) => println!("  interface {}", info.name.name),
+                Type::Class(info) => println!("  class {}", info.name.name),
+                Type::Struct(info) => println!("  struct {}", info.name.name),
+                Type::Delegate(info) => println!("  delegate {}", info.name.name),
+                Type::Enum(info) => println!("  enum {}", info.name.name),
+            }
+        }
+    }
 
-    let row = reader.type_def_from_type_name("Windows.Foundation", "Uri");
+    let def = reader.resolve(("Windows.Foundation", "EventHandler`1"));
 
-    let info = reader.type_info(row);
+    let info = reader.type_info(def);
 
     println!("{:#?}", info);
 
