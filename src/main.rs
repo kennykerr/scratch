@@ -1,32 +1,57 @@
 use winmd::*;
+use std::collections::*;
+
+fn insert(reader: &Reader, types: &mut BTreeMap::<TypeDef, Type>, def: TypeDef) {
+    println!("insert: {:?}", def.name(reader));
+    if !types.contains_key(&def) {
+        let info = def.info(reader);
+        let depends = info.dependencies();
+        types.insert(def, info);
+        for def in depends {
+            insert(reader, types, def);
+        }
+    }
+}
 
 fn main() {
-    let reader = Reader::from_os();
+    let mut reader = &Reader::from_os();
 
-    for ns in reader.namespaces() {
-        // println!("namespace {}", ns);
+    let mut limits = BTreeSet::new();
+    limits.insert("Windows.Foundation".to_string());
 
-        // if ns != "Windows.Foundation" {
-        //     continue;
-        // }
+    let mut types = BTreeMap::<TypeDef, Type>::new();
 
-        for t in reader.namespace_types(ns) {
-            println!("type: {:?}", t.name(&reader),);
-            match reader.type_info(*t) {
-                Type::Interface(info) => println!("  interface {}", info.name.name),
-                Type::Class(info) => println!("  class {}", info.name.name),
-                Type::Struct(info) => println!("  struct {}", info.name.name),
-                Type::Delegate(info) => println!("  delegate {}", info.name.name),
-                Type::Enum(info) => println!("  enum {}", info.name.name),
-            }
+    for namespace in limits {
+        for def in reader.namespace_types(&namespace) {
+            insert(reader, &mut types, *def);
         }
     }
 
-    let def = reader.resolve(("Windows.Foundation", "EventHandler`1"));
 
-    let info = reader.type_info(def);
+    // for ns in reader.namespaces() {
+    //     // println!("namespace {}", ns);
 
-    println!("{:#?}", info);
+    //     // if ns != "Windows.Foundation" {
+    //     //     continue;
+    //     // }
+
+    //     for t in reader.namespace_types(ns) {
+    //         println!("type: {:?}", t.name(&reader),);
+    //         match reader.type_info(*t) {
+    //             Type::Interface(info) => println!("  interface {}", info.name.name),
+    //             Type::Class(info) => println!("  class {}", info.name.name),
+    //             Type::Struct(info) => println!("  struct {}", info.name.name),
+    //             Type::Delegate(info) => println!("  delegate {}", info.name.name),
+    //             Type::Enum(info) => println!("  enum {}", info.name.name),
+    //         }
+    //     }
+    // }
+
+    // let def = reader.resolve(("Windows.UI.Composition", "SpriteVisual"));
+
+    // let info = reader.type_info(def);
+
+    // println!("{:#?}", info);
 
     // for def in reader.namespace_types("Windows.Foundation") {
     //     println!("  {}", def.name());
