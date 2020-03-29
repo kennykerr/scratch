@@ -1,9 +1,10 @@
-use winmd::*;
 use std::collections::*;
+use winmd::*;
 
-fn insert(reader: &Reader, types: &mut BTreeMap::<TypeDef, Type>, def: TypeDef) {
-    println!("insert: {:?}", def.name(reader));
+fn insert(reader: &Reader, types: &mut BTreeMap<TypeDef, Type>, def: TypeDef) {
     if !types.contains_key(&def) {
+        let name = def.name(reader);
+        println!("{}.{}", name.0, name.1);
         let info = def.info(reader);
         let depends = info.dependencies();
         types.insert(def, info);
@@ -17,7 +18,7 @@ fn main() {
     let mut reader = &Reader::from_os();
 
     let mut limits = BTreeSet::new();
-    limits.insert("Windows.Foundation".to_string());
+    limits.insert("Windows.UI.Composition".to_string());
 
     let mut types = BTreeMap::<TypeDef, Type>::new();
 
@@ -26,7 +27,6 @@ fn main() {
             insert(reader, &mut types, *def);
         }
     }
-
 
     // for ns in reader.namespaces() {
     //     // println!("namespace {}", ns);
