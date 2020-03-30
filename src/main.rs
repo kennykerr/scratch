@@ -126,7 +126,7 @@ fn main() {
     let mut reader = &Reader::from_os();
 
     let mut limits: TypeLimits = Default::default();
-    limits.insert(reader, "windows.ui.xaml.controls");
+    limits.insert(reader, "windows.foundation");
 
     let stage = TypeStage::from_limits(reader, &limits);
 
@@ -140,7 +140,7 @@ fn main() {
 
     println!("stream");
 
-    //println!("{:#?}", stream);
+    println!("{}", stream.to_string());
 
     // for ns in reader.namespaces() {
     //     // println!("namespace {}", ns);
