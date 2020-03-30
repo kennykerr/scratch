@@ -1,7 +1,10 @@
+use proc_macro2::{Ident, Literal, TokenStream};
+use quote::{format_ident, quote};
 use std::collections::*;
+use std::iter::FromIterator;
 use winmd::*;
 
-#[derive(Default, Debug)]
+#[derive(Default)]
 struct TypeLimits(BTreeSet<String>);
 
 impl TypeLimits {
@@ -29,10 +32,22 @@ impl TypeLimits {
 struct TypeStage(BTreeMap<TypeDef, Type>);
 
 impl TypeStage {
+    fn from_limits(reader: &Reader, limits: &TypeLimits) -> TypeStage {
+        let mut stage: TypeStage = Default::default();
+
+        for namespace in &limits.0 {
+            for def in reader.namespace_types(&namespace) {
+                stage.insert(reader, *def);
+            }
+        }
+
+        stage
+    }
+
     fn insert(&mut self, reader: &Reader, def: TypeDef) {
         if !self.0.contains_key(&def) {
             let name = def.name(reader);
-            println!("{}.{}", name.0, name.1);
+            //println!("{}.{}", name.0, name.1);
             let info = def.info(reader);
             let depends = info.dependencies();
             self.0.insert(def, info);
@@ -51,22 +66,59 @@ impl TypeStage {
     }
 }
 
-#[derive(Default, Debug)]
+#[derive(Default)]
+struct TypeNamespace(BTreeMap<String, TypeTree>);
+
+impl TypeNamespace {
+    fn into_stream(&self) -> TokenStream {
+        let mut tokens = Vec::new();
+
+        for (name, tree) in self.0.iter() {
+            let name = write_ident(name);
+            let tree = tree.into_stream();
+
+            tokens.push(quote! {
+                pub mod #name {
+                    #tree
+                }
+            });
+        }
+
+        TokenStream::from_iter(tokens)
+    }
+}
+
+#[derive(Default)]
 struct TypeTree {
     types: Vec<Type>,
-    namespaces: BTreeMap<String, TypeTree>,
+    namespaces: TypeNamespace,
 }
 
 impl TypeTree {
     fn insert(&mut self, namespace: String, t: Type) {
         if let Some(pos) = namespace.find('.') {
             self.namespaces
+                .0
                 .entry(namespace[..pos].to_string())
                 .or_default()
                 .insert(namespace[pos + 1..].to_string(), t);
         } else {
-            self.namespaces.entry(namespace).or_default().types.push(t);
+            self.namespaces
+                .0
+                .entry(namespace)
+                .or_default()
+                .types
+                .push(t);
         }
+    }
+
+    fn into_stream(&self) -> TokenStream {
+        TokenStream::from_iter(
+            self.types
+                .iter()
+                .map(|t| t.into_stream())
+                .chain(std::iter::once(self.namespaces.into_stream())),
+        )
     }
 }
 
@@ -74,23 +126,21 @@ fn main() {
     let mut reader = &Reader::from_os();
 
     let mut limits: TypeLimits = Default::default();
-    limits.insert(reader, "windows.foundation.collections");
+    limits.insert(reader, "windows.ui.xaml.controls");
 
-    let mut stage: TypeStage = Default::default();
-
-    for namespace in &limits.0 {
-        for def in reader.namespace_types(&namespace) {
-            stage.insert(reader, *def);
-        }
-    }
+    let stage = TypeStage::from_limits(reader, &limits);
 
     println!("count: {}", stage.0.len());
 
     let tree = stage.into_tree();
 
-    println!("done");
+    println!("tree");
 
-    //println!("{:#?}", tree);
+    let stream = tree.into_stream();
+
+    println!("stream");
+
+    //println!("{:#?}", stream);
 
     // for ns in reader.namespaces() {
     //     // println!("namespace {}", ns);
