@@ -1,6 +1,30 @@
 use std::collections::*;
 use winmd::*;
 
+#[derive(Default, Debug)]
+struct TypeLimits(BTreeSet<String>);
+
+impl TypeLimits {
+    fn insert(&mut self, reader: &Reader, namespace: &str) {
+        let found = reader
+            .types
+            .keys()
+            .find(|name| name.to_lowercase() == namespace)
+            .unwrap_or_else(|| panic!("Namespace `{}` not found in winmd files", namespace));
+
+        let mut namespace = found.as_str();
+        self.0.insert(namespace.to_string());
+
+        while let Some(pos) = namespace.rfind('.') {
+            namespace = namespace.get(..pos).unwrap();
+
+            if reader.types.contains_key(namespace) {
+                self.0.insert(namespace.to_string());
+            }
+        }
+    }
+}
+
 #[derive(Default)]
 struct TypeStage(BTreeMap<TypeDef, Type>);
 
@@ -8,7 +32,7 @@ impl TypeStage {
     fn insert(&mut self, reader: &Reader, def: TypeDef) {
         if !self.0.contains_key(&def) {
             let name = def.name(reader);
-            //println!("{}.{}", name.0, name.1);
+            println!("{}.{}", name.0, name.1);
             let info = def.info(reader);
             let depends = info.dependencies();
             self.0.insert(def, info);
@@ -20,7 +44,9 @@ impl TypeStage {
 
     fn into_tree(self) -> TypeTree {
         let mut tree: TypeTree = Default::default();
-        self.0.into_iter().for_each(|(_,t)|tree.insert(t.name().namespace.clone(), t));
+        self.0
+            .into_iter()
+            .for_each(|(_, t)| tree.insert(t.name().namespace.clone(), t));
         tree
     }
 }
@@ -39,11 +65,7 @@ impl TypeTree {
                 .or_default()
                 .insert(namespace[pos + 1..].to_string(), t);
         } else {
-            self.namespaces
-                .entry(namespace)
-                .or_default()
-                .types
-                .push(t);
+            self.namespaces.entry(namespace).or_default().types.push(t);
         }
     }
 }
@@ -51,12 +73,12 @@ impl TypeTree {
 fn main() {
     let mut reader = &Reader::from_os();
 
-    let mut limits = BTreeSet::new();
-    limits.insert("Windows.UI.Xaml.Controls".to_string());
+    let mut limits: TypeLimits = Default::default();
+    limits.insert(reader, "windows.foundation.collections");
 
     let mut stage: TypeStage = Default::default();
 
-    for namespace in &limits {
+    for namespace in &limits.0 {
         for def in reader.namespace_types(&namespace) {
             stage.insert(reader, *def);
         }
@@ -69,7 +91,6 @@ fn main() {
     println!("done");
 
     //println!("{:#?}", tree);
-
 
     // for ns in reader.namespaces() {
     //     // println!("namespace {}", ns);
