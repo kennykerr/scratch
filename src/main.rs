@@ -1,15 +1,49 @@
 use std::collections::*;
 use winmd::*;
 
-fn insert(reader: &Reader, types: &mut BTreeMap<TypeDef, Type>, def: TypeDef) {
-    if !types.contains_key(&def) {
-        let name = def.name(reader);
-        println!("{}.{}", name.0, name.1);
-        let info = def.info(reader);
-        let depends = info.dependencies();
-        types.insert(def, info);
-        for def in depends {
-            insert(reader, types, def);
+#[derive(Default)]
+struct TypeStage(BTreeMap<TypeDef, Type>);
+
+impl TypeStage {
+    fn insert(&mut self, reader: &Reader, def: TypeDef) {
+        if !self.0.contains_key(&def) {
+            let name = def.name(reader);
+            //println!("{}.{}", name.0, name.1);
+            let info = def.info(reader);
+            let depends = info.dependencies();
+            self.0.insert(def, info);
+            for def in depends {
+                self.insert(reader, def);
+            }
+        }
+    }
+
+    fn into_tree(self) -> TypeTree {
+        let mut tree: TypeTree = Default::default();
+        self.0.into_iter().for_each(|(_,t)|tree.insert(t.name().namespace.clone(), t));
+        tree
+    }
+}
+
+#[derive(Default, Debug)]
+struct TypeTree {
+    types: Vec<Type>,
+    namespaces: BTreeMap<String, TypeTree>,
+}
+
+impl TypeTree {
+    fn insert(&mut self, namespace: String, t: Type) {
+        if let Some(pos) = namespace.find('.') {
+            self.namespaces
+                .entry(namespace[..pos].to_string())
+                .or_default()
+                .insert(namespace[pos + 1..].to_string(), t);
+        } else {
+            self.namespaces
+                .entry(namespace)
+                .or_default()
+                .types
+                .push(t);
         }
     }
 }
@@ -18,15 +52,24 @@ fn main() {
     let mut reader = &Reader::from_os();
 
     let mut limits = BTreeSet::new();
-    limits.insert("Windows.UI.Composition".to_string());
+    limits.insert("Windows.UI.Xaml.Controls".to_string());
 
-    let mut types = BTreeMap::<TypeDef, Type>::new();
+    let mut stage: TypeStage = Default::default();
 
-    for namespace in limits {
+    for namespace in &limits {
         for def in reader.namespace_types(&namespace) {
-            insert(reader, &mut types, *def);
+            stage.insert(reader, *def);
         }
     }
+
+    println!("count: {}", stage.0.len());
+
+    let tree = stage.into_tree();
+
+    println!("done");
+
+    //println!("{:#?}", tree);
+
 
     // for ns in reader.namespaces() {
     //     // println!("namespace {}", ns);
