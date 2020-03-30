@@ -4,13 +4,6 @@ use std::collections::*;
 use std::iter::FromIterator;
 use winmd::*;
 
-
-
-
-
-
-
-
 fn main() {
     let mut reader = &Reader::from_os();
 
