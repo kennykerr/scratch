@@ -1,3 +1,5 @@
+
+
 use proc_macro2::{Ident, Literal, TokenStream};
 use quote::{format_ident, quote};
 use std::collections::*;
@@ -14,11 +16,11 @@ fn main() {
 
     println!("count: {}", stage.0.len());
 
-    let tree = stage.into_tree();
+    let tree = stage.to_tree();
 
     println!("tree");
 
-    let stream = tree.into_stream();
+    let stream = tree.to_stream();
 
     println!("stream");
 
