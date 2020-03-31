@@ -1,5 +1,3 @@
-
-
 use proc_macro2::{Ident, Literal, TokenStream};
 use quote::{format_ident, quote};
 use std::collections::*;
