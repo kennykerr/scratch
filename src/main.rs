@@ -7,7 +7,7 @@ use winmd::*;
 fn main() {
     let mut reader = &Reader::from_os();
 
-    let def = reader.resolve(("Windows.Foundation", "Point"));
+    let def = reader.resolve(("Windows.Foundation", "IReference`1"));
     let info = def.info(reader);
     println!("{:#?}", info);
     let stream = info.to_stream();
