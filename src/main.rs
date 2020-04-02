@@ -7,29 +7,20 @@ use winmd::*;
 fn main() {
     let reader = &Reader::from_os();
 
-     let def = reader.resolve(("Windows.Foundation", "IStringable"));
+    let mut limits: TypeLimits = Default::default();
+    limits.insert(reader, "windows.foundation");
 
-    let guid = def.attribute(reader, ("Windows.Foundation.Metadata", "GuidAttribute"));
+    let stage = TypeStage::from_limits(reader, &limits);
 
-     let info = def.info(reader);
-     println!("{:#?}", info);
-    // let stream = info.to_stream();
-    // println!("{}", stream.to_string());
+    println!("count: {}", stage.0.len());
 
-    // let mut limits: TypeLimits = Default::default();
-    // limits.insert(reader, "windows.foundation");
+    let tree = stage.to_tree();
 
-    // let stage = TypeStage::from_limits(reader, &limits);
+    println!("tree");
 
-    // println!("count: {}", stage.0.len());
+    let stream = tree.to_stream();
 
-    // let tree = stage.to_tree();
+    println!("stream");
 
-    // println!("tree");
-
-    // let stream = tree.to_stream();
-
-    // println!("stream");
-
-    // println!("{}", stream.to_string());
+    println!("{}", stream.to_string());
 }
