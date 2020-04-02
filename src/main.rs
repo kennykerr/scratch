@@ -1,26 +1,38 @@
-use proc_macro2::{Ident, Literal, TokenStream};
-use quote::{format_ident, quote};
-use std::collections::*;
-use std::iter::FromIterator;
-use winmd::*;
+winrt::import!(
+    dependencies:
+        "os"
+    modules:
+        "windows.foundation"
+);
 
 fn main() {
-    let reader = &Reader::from_os();
-
-    let mut limits: TypeLimits = Default::default();
-    limits.insert(reader, "windows.foundation");
-
-    let stage = TypeStage::from_limits(reader, &limits);
-
-    println!("count: {}", stage.0.len());
-
-    let tree = stage.to_tree();
-
-    println!("tree");
-
-    let stream = tree.to_stream();
-
-    println!("stream");
-
-    println!("{}", stream.to_string());
+    let uri = Windows::Foundation::Uri {};
 }
+
+
+// use proc_macro2::{Ident, Literal, TokenStream};
+// use quote::{format_ident, quote};
+// use std::collections::*;
+// use std::iter::FromIterator;
+// use winmd::*;
+
+// fn main() {
+//     let reader = &Reader::from_os();
+
+//     let mut limits: TypeLimits = Default::default();
+//     limits.insert(reader, "windows.foundation");
+
+//     let stage = TypeStage::from_limits(reader, &limits);
+
+//     println!("count: {}", stage.0.len());
+
+//     let tree = stage.to_tree();
+
+//     println!("tree");
+
+//     let stream = tree.to_stream();
+
+//     println!("stream");
+
+//     println!("{}", stream.to_string());
+// }
