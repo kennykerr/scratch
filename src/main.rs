@@ -5,13 +5,16 @@ use std::iter::FromIterator;
 use winmd::*;
 
 fn main() {
-    let mut reader = &Reader::from_os();
+    let reader = &Reader::from_os();
 
-    let def = reader.resolve(("Windows.Foundation", "IReference`1"));
-    let info = def.info(reader);
-    println!("{:#?}", info);
-    let stream = info.to_stream();
-    println!("{}", stream.to_string());
+     let def = reader.resolve(("Windows.Foundation", "IStringable"));
+
+    let guid = def.attribute(reader, ("Windows.Foundation.Metadata", "GuidAttribute"));
+
+     let info = def.info(reader);
+     println!("{:#?}", info);
+    // let stream = info.to_stream();
+    // println!("{}", stream.to_string());
 
     // let mut limits: TypeLimits = Default::default();
     // limits.insert(reader, "windows.foundation");
