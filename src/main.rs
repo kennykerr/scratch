@@ -13,11 +13,11 @@ fn main() {
     let mut limits: TypeLimits = Default::default();
     limits.insert(reader, "windows.foundation");
 
-    let stage = TypeStage::from_limits(reader, &limits);
+    let stage = TypeStage::from_limits(&limits, reader);
 
     println!("count: {}", stage.0.len());
 
-    let tree = stage.to_tree();
+    let tree = stage.into_tree();
 
     println!("tree");
 
