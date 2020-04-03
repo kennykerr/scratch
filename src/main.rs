@@ -8,7 +8,8 @@ fn main() {
     let reader = &Reader::from_os();
 
     let def = reader.resolve(("Windows.Foundation", "IStringable"));
-    def.attribute(reader, ("Windows.Foundation.Metadata", "GuidAttribute")).arguments(reader);
+    def.attribute(reader, ("Windows.Foundation.Metadata", "GuidAttribute"))
+        .arguments(reader);
 
     let mut limits: TypeLimits = Default::default();
     limits.insert(reader, "windows.foundation");
