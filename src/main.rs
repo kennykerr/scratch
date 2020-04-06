@@ -1,30 +1,33 @@
-use proc_macro2::{Ident, Literal, TokenStream};
-use quote::{format_ident, quote};
-use std::collections::*;
-use std::iter::FromIterator;
+//use proc_macro2::{Ident, Literal, TokenStream};
+//use quote::{format_ident, quote};
+//use std::collections::*;
+//use std::iter::FromIterator;
 use winmd::*;
 
 fn main() {
-    let reader = &Reader::from_os();
+    let winmd_files = load_winmd::from_os();
+    let reader = &TypeReader::new(winmd_files);
 
-    let def = reader.resolve(("Windows.Foundation", "IStringable"));
-    def.attribute(reader, ("Windows.Foundation.Metadata", "GuidAttribute"))
-        .arguments(reader);
+    let def = reader.resolve(("Windows.Foundation", "WwwFormUrlDecoder"));
 
-    let mut limits: TypeLimits = Default::default();
-    limits.insert(reader, "windows.foundation");
+    let t = def.into_type(reader);
 
-    let stage = TypeStage::from_limits(&limits, reader);
+    println!("{:#?}", t);
 
-    println!("count: {}", stage.0.len());
+    // let mut limits: TypeLimits = Default::default();
+    // limits.insert(reader, "windows.foundation");
 
-    let tree = stage.into_tree();
+    // let stage = TypeStage::from_limits(reader, &limits);
 
-    println!("tree");
+    // println!("count: {}", stage.0.len());
 
-    let stream = tree.to_stream();
+    // let tree = stage.into_tree();
 
-    println!("stream");
+    // println!("tree");
 
-    println!("{}", stream.to_string());
+    // let stream = tree.to_stream();
+
+    // println!("stream");
+
+    // println!("{}", stream.to_string());
 }
