@@ -6,3 +6,10 @@ edition = "2018"
 [dependencies]
 winrt = { path = "../winrt-rs" }
 winmd = { path = "../winrt-rs/crates/winmd" }
+sha1 = "0.6.0"
+
+[build-dependencies]
+winrt = { path = "../winrt-rs" }
+
+[package.metadata.nuget_dependencies]
+"Win2D.uwp" = "1.25.0"
