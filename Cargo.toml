@@ -4,12 +4,10 @@ version = "0.1.0"
 edition = "2018"
 
 [dependencies]
-winrt = { path = "../winrt-rs" }
-winmd = { path = "../winrt-rs/crates/winmd" }
-sha1 = "0.6.0"
+winrt = { git = "https://github.com/microsoft/winrt-rs" }
 
 [build-dependencies]
-winrt = { path = "../winrt-rs" }
+winrt = { git = "https://github.com/microsoft/winrt-rs" }
 
-[package.metadata.nuget_dependencies]
-"Win2D.uwp" = "1.25.0"
+[package.metadata.winrt.dependencies]
+"Microsoft.Windows.SDK.Contracts" = "10.0.19041.1"

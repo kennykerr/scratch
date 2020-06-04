@@ -1,9 +1,10 @@
-//use winrt::Builder;
+winrt::build!(
+    dependencies
+        nuget: Microsoft.Windows.SDK.Contracts
+    types
+        windows::application_model::data_transfer::*
+);
 
 fn main() {
-    // Builder::default()
-    //     .insert_nuget(&["TestComponent", "Win2D.uwp"])
-    //     .insert_namespaces(&["testcomponent", "microsoft.graphics.canvas"])
-    //     .build()
-    //     .unwrap();
+    build();
 }
