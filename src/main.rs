@@ -1,4 +1,4 @@
-include!(concat!(env!("OUT_DIR"), "/winrt.rs"));
+use bindings::*;
 
 fn main() -> winrt::Result<()> {
     use windows::application_model::data_transfer::*;
@@ -16,6 +16,8 @@ fn main() -> winrt::Result<()> {
     }
 
     //println!("{}", view.get_text_async()?.get()?);
+
+    println!("ok");
 
     Ok(())
 }
