@@ -17,7 +17,7 @@ fn main() -> winrt::Result<()> {
 
     //println!("{}", view.get_text_async()?.get()?);
 
-    println!("ok");
+    println!("ok!!");
 
     Ok(())
 }

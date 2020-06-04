@@ -8,6 +8,3 @@ winrt = "0.7.0"
 
 [build-dependencies]
 winrt = "0.7.0"
-
-[package.metadata.winrt.dependencies]
-"Microsoft.Windows.SDK.Contracts" = "10.0.19041.1"

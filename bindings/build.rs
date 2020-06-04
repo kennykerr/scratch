@@ -1,8 +1,9 @@
 winrt::build!(
     dependencies
-        nuget: Microsoft.Windows.SDK.Contracts
+        os
     types
         windows::application_model::data_transfer::*
+        windows::ui::composition::*
 );
 
 fn main() {
