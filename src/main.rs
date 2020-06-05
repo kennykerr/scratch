@@ -1,6 +1,12 @@
 use bindings::*;
 
 fn main() -> winrt::Result<()> {
+    clipboard()?;
+
+    Ok(())
+}
+
+fn clipboard() -> winrt::Result<()> {
     use windows::application_model::data_transfer::*;
 
     let content = DataPackage::new()?;
@@ -8,16 +14,6 @@ fn main() -> winrt::Result<()> {
      
     Clipboard::set_content(content)?;
     Clipboard::flush()?;
-
-    let view = Clipboard::get_content()?;
-
-    for format in view.available_formats()? {
-        println!("{}", format);
-    }
-
-    //println!("{}", view.get_text_async()?.get()?);
-
-    println!("ok!!");
 
     Ok(())
 }
