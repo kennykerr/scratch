@@ -1,18 +1,17 @@
-use bindings::*;
+use bindings::windows::application_model::data_transfer::{Clipboard, DataPackage};
+use bindings::windows::data::xml::dom::XmlDocument;
+use bindings::windows::foundation::Uri;
+use bindings::windows::web::syndication::SyndicationClient;
 
 fn main() -> winrt::Result<()> {
     clipboard()?;
     xml()?;
     feed()?;
-
     Ok(())
 }
 
 fn clipboard() -> winrt::Result<()> {
-    use windows::application_model::data_transfer::*;
-
     let content = DataPackage::new()?;
-    content.set_text("Rust/WinRT")?;
 
     Clipboard::set_content(content)?;
     Clipboard::flush()?;
@@ -23,7 +22,6 @@ fn clipboard() -> winrt::Result<()> {
 }
 
 fn xml() -> winrt::Result<()> {
-    use windows::data::xml::dom::XmlDocument;
     let doc = XmlDocument::new()?;
 
     doc.load_xml(
@@ -45,13 +43,11 @@ fn xml() -> winrt::Result<()> {
 }
 
 fn feed() -> winrt::Result<()> {
-    use windows::foundation::Uri;
-    use windows::web::syndication::*;
-
     let uri = Uri::create_uri("https://kennykerr.ca/feed")?;
-    let client = SyndicationClient::new()?;
-    let feed = client.retrieve_feed_async(uri)?.get()?;
 
+    let client = SyndicationClient::new()?;
+
+    let feed = client.retrieve_feed_async(uri)?.get()?;
     for item in feed.items()?.into_iter().take(3) {
         println!("title: {}", item.title()?.text()?);
     }
