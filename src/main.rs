@@ -3,6 +3,21 @@ use bindings::*;
 fn main() -> winrt::Result<()> {
     clipboard()?;
     xml()?;
+    feed()?;
+
+    Ok(())
+}
+
+fn clipboard() -> winrt::Result<()> {
+    use windows::application_model::data_transfer::*;
+
+    let content = DataPackage::new()?;
+    content.set_text("Rust/WinRT")?;
+
+    Clipboard::set_content(content)?;
+    Clipboard::flush()?;
+
+    // "Rust/WinRT" is now on the clipboard
 
     Ok(())
 }
@@ -23,22 +38,23 @@ fn xml() -> winrt::Result<()> {
     let colors = root.get_elements_by_tag_name("color")?;
 
     for color in colors {
-        println!("{}", color.inner_text()?);
+        println!("color: {}", color.inner_text()?);
     }
 
     Ok(())
 }
 
-fn clipboard() -> winrt::Result<()> {
-    use windows::application_model::data_transfer::*;
+fn feed() -> winrt::Result<()> {
+    use windows::foundation::Uri;
+    use windows::web::syndication::*;
 
-    let content = DataPackage::new()?;
-    content.set_text("Rust/WinRT")?;
+    let uri = Uri::create_uri("https://kennykerr.ca/feed")?;
+    let client = SyndicationClient::new()?;
+    let feed = client.retrieve_feed_async(uri)?.get()?;
 
-    Clipboard::set_content(content)?;
-    Clipboard::flush()?;
-
-    // "Rust/WinRT" is now on the clipboard
+    for item in feed.items()?.into_iter().take(3) {
+        println!("title: {}", item.title()?.text()?);
+    }
 
     Ok(())
 }

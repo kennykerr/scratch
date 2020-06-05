@@ -5,6 +5,7 @@ winrt::build!(
         windows::application_model::data_transfer::*
         windows::ui::composition::*
         windows::data::xml::dom::*
+        windows::web::syndication::*
 );
 
 fn main() {
