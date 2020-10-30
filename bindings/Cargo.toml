@@ -8,3 +8,6 @@ winrt = { path = "../../winrt-rs" }
 
 [build-dependencies]
 winrt = { path = "../../winrt-rs" }
+
+[package.metadata.winrt.dependencies]
+"Microsoft.Windows.SDK.Contracts" = "10.0.19041.1"
