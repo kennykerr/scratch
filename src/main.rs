@@ -2,7 +2,7 @@ use bindings::*;
 use winrt::*;
 
 fn main() -> Result<()> {
-    let s = Thing::into_com(Thing::new("HELLO WORLD!".into()));
+    let s = Thing::new("HELLO WORLD!".into()).into_box();
     println!("s: {}", s.to_string()?);
 
     let b: windows::foundation::IStringable = s.try_query()?;
@@ -10,6 +10,9 @@ fn main() -> Result<()> {
 
     let c: windows::foundation::IClosable = s.try_query()?;
     c.close()?;
+
+    let o: Object = c.into();
+    println!("type: {}", o.type_name()?);
 
     Ok(())
 }
@@ -49,20 +52,20 @@ impl Thing {
 
 // TODO: This should be generated:
 impl Thing {
-    pub fn into_com(self) -> windows::foundation::IStringable {
-        com_Thing::new(self)
+    pub fn into_box(self) -> windows::foundation::IStringable {
+        box_Thing::new(self)
     }
 }
 
 #[repr(C)]
-struct com_Thing {
+struct box_Thing {
     vtable: (*const abi_IStringable, *const abi_IClosable),
     inner: Thing,
     count: RefCount,
 }
 
 #[allow(non_snake_case)]
-impl com_Thing {
+impl box_Thing {
     fn new(inner: Thing) -> windows::foundation::IStringable {
         let com = Self {
             vtable: (&Self::VTABLE.0, &Self::VTABLE.1),
@@ -113,6 +116,7 @@ impl com_Thing {
             *interface = match iid {
                 &<windows::foundation::IStringable as ComInterface>::IID
                 | &<::winrt::IUnknown as ::winrt::ComInterface>::IID
+                | &<::winrt::Object as ::winrt::ComInterface>::IID
                 | &<::winrt::IAgileObject as ::winrt::ComInterface>::IID => {
                     &mut self.vtable.0 as *mut _ as _
                 }
@@ -139,7 +143,9 @@ impl com_Thing {
         let remaining = self.count.release();
 
         if remaining == 0 {
-            unsafe { Box::from_raw(self); }
+            unsafe {
+                Box::from_raw(self);
+            }
         }
 
         remaining
@@ -167,9 +173,12 @@ impl com_Thing {
 
     extern "system" fn IInspectable_GetRuntimeClassName(
         _: RawPtr,
-        _value: *mut RawPtr,
+        value: *mut RawPtr,
     ) -> ErrorCode {
-        panic!("IInspectable_GetRuntimeClassName"); // TODO: class name or first interface (from implements macro)
+        unsafe {
+            *value = <HString as AbiTransferable>::into_abi("Thing".into());
+        }
+        ErrorCode::S_OK
     }
 
     extern "system" fn IInspectable_GetTrustLevel(_: RawPtr, value: *mut i32) -> ErrorCode {
@@ -213,7 +222,7 @@ impl com_Thing {
 
     extern "system" fn IStringable_ToString(
         this: RawPtr,
-        value: *mut <::winrt::HString as ::winrt::AbiTransferable>::Abi,
+        value: *mut RawPtr,
     ) -> ErrorCode {
         unsafe {
             let this = (this as *mut RawPtr).offset(0) as *mut Self;
@@ -269,20 +278,22 @@ impl com_Thing {
 type IUnknown_QueryInterface =
     extern "system" fn(this: RawPtr, iid: &Guid, interface: *mut RawPtr) -> ErrorCode;
 
-    #[allow(non_camel_case_types)]
-    type IUnknown_AddRef = extern "system" fn(this: RawPtr) -> u32;
+#[allow(non_camel_case_types)]
+type IUnknown_AddRef = extern "system" fn(this: RawPtr) -> u32;
 
-    #[allow(non_camel_case_types)]
-    type IUnknown_Release = extern "system" fn(this: RawPtr) -> u32;
+#[allow(non_camel_case_types)]
+type IUnknown_Release = extern "system" fn(this: RawPtr) -> u32;
 
-    #[allow(non_camel_case_types)]
-    type IInspectable_GetIids =
+#[allow(non_camel_case_types)]
+type IInspectable_GetIids =
     extern "system" fn(this: RawPtr, count: *mut u32, values: *mut *mut Guid) -> ErrorCode;
-    #[allow(non_camel_case_types)]
-    type IInspectable_GetRuntimeClassName =
-    extern "system" fn(this: RawPtr, value: *mut RawPtr) -> ErrorCode;
-    #[allow(non_camel_case_types)]
-    type IInspectable_GetTrustLevel = extern "system" fn(this: RawPtr, value: *mut i32) -> ErrorCode;
+#[allow(non_camel_case_types)]
+type IInspectable_GetRuntimeClassName = extern "system" fn(
+    this: RawPtr,
+    value: *mut RawPtr,
+) -> ErrorCode;
+#[allow(non_camel_case_types)]
+type IInspectable_GetTrustLevel = extern "system" fn(this: RawPtr, value: *mut i32) -> ErrorCode;
 
 #[repr(C)]
 pub struct abi_IStringable(
@@ -294,7 +305,7 @@ pub struct abi_IStringable(
     IInspectable_GetTrustLevel,
     extern "system" fn(
         this: RawPtr,
-        value: *mut <::winrt::HString as ::winrt::AbiTransferable>::Abi,
+        value: *mut RawPtr,
     ) -> ErrorCode,
 );
 
