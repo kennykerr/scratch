@@ -6,4 +6,4 @@ edition = "2018"
 [dependencies]
 winrt = { path = "../winrt-rs" }
 bindings = { path = "bindings" }
-macros = { path = "macros" }
+#macros = { path = "macros" }

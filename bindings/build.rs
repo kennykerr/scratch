@@ -1,6 +1,5 @@
 fn main() {
     winrt::build!(
-        types
-            windows::ui::Colors
+        windows::data::xml::dom::*
     );
 }

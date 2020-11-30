@@ -1,321 +1,69 @@
-use bindings::*;
 use winrt::*;
+use bindings::*;
 
 fn main() -> Result<()> {
-    let s = Thing::new("HELLO WORLD!".into()).into_box();
-    println!("s: {}", s.to_string()?);
+    use windows::data::xml::dom::*;
 
-    let b: windows::foundation::IStringable = s.try_query()?;
-    println!("b: {}", b.to_string()?);
+    let doc = XmlDocument::new()?;
+    doc.load_xml("<html>hello world</html>")?;
 
-    let c: windows::foundation::IClosable = s.try_query()?;
-    c.close()?;
-
-    let o: Object = c.into();
-    println!("type: {}", o.type_name()?);
+    let root = doc.document_element()?;
+    assert!(root.node_name()? == "html");
+    println!("{}", root.inner_text()?);
 
     Ok(())
 }
 
-// TODO: implements macro must sniff out "bindings" crate/module name to figure out how to
-// preamble the internal names like the abi_IInterface etc. It can do so by first looking
-// up the names in the TypeReader and if not found, peel off root namespace.
 
-//#[macros::implements(windows::foundation::IStringable,windows::foundation::IClosable)]
-pub struct Thing {
-    value: String,
-}
+// mod windows {
+//     pub use winrt::foundation;
+// }
 
-impl Drop for Thing {
-    fn drop(&mut self) {
-        println!("~Thing");
-    }
-}
+// use winrt::Interface; // for .cast()
+// use windows::foundation::Uri;
+// use std::cmp::Ordering;
 
-impl Thing {
-    fn new(value: String) -> Self {
-        Self { value }
-    }
+// struct Thing(i32);
 
-    pub fn to_string(&self) -> Result<HString> {
-        // Ok(self.value.into()) // TODO: why doesn't this work?
+// impl Ord for Thing {
+//     fn cmp(&self, other: &Self) -> Ordering {
+//         self.0.cmd(&other.0)
+//     }
+// }
 
-        Ok(self.value.clone().into())
-    }
+// // impl PartialEq for Thing {
+// //     fn eq(&self, other: &Self) -> bool {
+// //         self.0 == other.0
+// //     }
+// // }
 
-    pub fn close(&mut self) -> Result<()> {
-        println!("closing {}", self.value);
-        self.value.clear();
-        Ok(())
-    }
-}
+// fn main() -> Result<()> {
+//     let mut map = std::collections::BTreeMap::new();
+//     map.insert(Thing(1), 1);
+//     map.insert(Thing(2), 2);
 
-// TODO: This should be generated:
-impl Thing {
-    pub fn into_box(self) -> windows::foundation::IStringable {
-        box_Thing::new(self)
-    }
-}
+//     Ok(())
+// }
 
-#[repr(C)]
-struct box_Thing {
-    vtable: (*const abi_IStringable, *const abi_IClosable),
-    inner: Thing,
-    count: RefCount,
-}
+// // #[winrt::implement(windows::foundation::{IStringable, IClosable})]
+// // #[derive(Debug)]
+// // struct Thing (
+// //     String,
+// // );
 
-#[allow(non_snake_case)]
-impl box_Thing {
-    fn new(inner: Thing) -> windows::foundation::IStringable {
-        let com = Self {
-            vtable: (&Self::VTABLE.0, &Self::VTABLE.1),
-            count: ::winrt::RefCount::new(),
-            inner,
-        };
+// // impl Drop for Thing {
+// //     fn drop(&mut self) {
+// //         println!("drop: {}", self.0);
+// //     }
+// // }
 
-        // TODO: get rid of the all the wrapping in the projection.
-        unsafe {
-            let mut result: windows::foundation::IStringable = std::mem::zeroed();
-            let ptr: ::std::ptr::NonNull<Self> = ::std::ptr::NonNull::new_unchecked(
-                ::std::boxed::Box::into_raw(::std::boxed::Box::new(com)),
-            );
-            *<windows::foundation::IStringable as ::winrt::AbiTransferable>::set_abi(&mut result) =
-                Some(::winrt::NonNullRawComPtr::new(ptr.cast()));
-            result
-        }
-    }
+// // impl Thing {
+// //     fn to_string(&self) -> Result<winrt::HString> {
+// //         Ok(winrt::HString::from(&self.0))
+// //     }
 
-    const VTABLE: (abi_IStringable, abi_IClosable) = (
-        abi_IStringable(
-            Self::IStringable_QueryInterface,
-            Self::IStringable_AddRef,
-            Self::IStringable_Release,
-            Self::IInspectable_GetIids,
-            Self::IInspectable_GetRuntimeClassName,
-            Self::IInspectable_GetTrustLevel,
-            Self::IStringable_ToString,
-        ),
-        abi_IClosable(
-            Self::IClosable_QueryInterface,
-            Self::IClosable_AddRef,
-            Self::IClosable_Release,
-            Self::IInspectable_GetIids,
-            Self::IInspectable_GetRuntimeClassName,
-            Self::IInspectable_GetTrustLevel,
-            Self::IClosable_Close,
-        ),
-    );
-
-    //
-    // Common instance-specific IUnknown implementation.
-    // Interfaces must forward to these after adjusting the self pointer.
-    //
-
-    fn IUnknown_QueryInterface(&mut self, iid: &Guid, interface: *mut RawPtr) -> ErrorCode {
-        unsafe {
-            *interface = match iid {
-                &<windows::foundation::IStringable as ComInterface>::IID
-                | &<::winrt::IUnknown as ::winrt::ComInterface>::IID
-                | &<::winrt::Object as ::winrt::ComInterface>::IID
-                | &<::winrt::IAgileObject as ::winrt::ComInterface>::IID => {
-                    &mut self.vtable.0 as *mut _ as _
-                }
-                &<windows::foundation::IClosable as ComInterface>::IID => {
-                    &mut self.vtable.1 as *mut _ as _
-                }
-                _ => std::ptr::null_mut(),
-            };
-
-            if (*interface).is_null() {
-                winrt::ErrorCode::E_NOINTERFACE
-            } else {
-                self.count.add_ref();
-                winrt::ErrorCode::S_OK
-            }
-        }
-    }
-
-    fn IUnknown_AddRef(&mut self) -> u32 {
-        self.count.add_ref()
-    }
-
-    fn IUnknown_Release(&mut self) -> u32 {
-        let remaining = self.count.release();
-
-        if remaining == 0 {
-            unsafe {
-                Box::from_raw(self);
-            }
-        }
-
-        remaining
-    }
-
-    //
-    // Common type-specific IInspectable implementation.
-    // Interface vtables can share these directly.
-    //
-
-    extern "system" fn IInspectable_GetIids(
-        _: RawPtr,
-        count: *mut u32,
-        values: *mut *mut Guid,
-    ) -> ErrorCode {
-        // Note: even if we end up implementing this in future, it still doesn't need a this pointer
-        // since the data to be returned is type- not instance-specific so can be shared for all
-        // interfaces.
-        unsafe {
-            *count = 0;
-            *values = std::ptr::null_mut();
-        }
-        ErrorCode(0)
-    }
-
-    extern "system" fn IInspectable_GetRuntimeClassName(
-        _: RawPtr,
-        value: *mut RawPtr,
-    ) -> ErrorCode {
-        unsafe {
-            *value = <HString as AbiTransferable>::into_abi("Thing".into());
-        }
-        ErrorCode::S_OK
-    }
-
-    extern "system" fn IInspectable_GetTrustLevel(_: RawPtr, value: *mut i32) -> ErrorCode {
-        // Note: even if we end up implementing this in future, it still doesn't need a this pointer
-        // since the data to be returned is type- not instance-specific so can be shared for all
-        // interfaces.
-        unsafe {
-            *value = 0;
-        }
-        ErrorCode(0)
-    }
-
-    //
-    // IStringable virtual functions.
-    //
-
-    extern "system" fn IStringable_QueryInterface(
-        this: RawPtr,
-        iid: &Guid,
-        interface: *mut RawPtr,
-    ) -> ErrorCode {
-        unsafe {
-            let this = (this as *mut RawPtr).offset(0) as *mut Self;
-            (*this).IUnknown_QueryInterface(iid, interface)
-        }
-    }
-
-    extern "system" fn IStringable_AddRef(this: RawPtr) -> u32 {
-        unsafe {
-            let this = (this as *mut RawPtr).offset(0) as *mut Self;
-            (*this).IUnknown_AddRef()
-        }
-    }
-
-    extern "system" fn IStringable_Release(this: RawPtr) -> u32 {
-        unsafe {
-            let this = (this as *mut RawPtr).offset(0) as *mut Self;
-            (*this).IUnknown_Release()
-        }
-    }
-
-    extern "system" fn IStringable_ToString(
-        this: RawPtr,
-        value: *mut RawPtr,
-    ) -> ErrorCode {
-        unsafe {
-            let this = (this as *mut RawPtr).offset(0) as *mut Self;
-
-            // TODO: winrt::Result needs to be more than just a type alias so we can clean this up with a simple into_abi method.
-            match (*this).inner.to_string() {
-                ::std::result::Result::Ok(ok__) => {
-                    *value = <HString as AbiTransferable>::into_abi(ok__);
-                    ErrorCode(0)
-                }
-                ::std::result::Result::Err(err) => err.into(),
-            }
-        }
-    }
-
-    //
-    // IClosable virtual functions.
-    //
-
-    extern "system" fn IClosable_QueryInterface(
-        this: RawPtr,
-        iid: &Guid,
-        interface: *mut RawPtr,
-    ) -> ErrorCode {
-        unsafe {
-            let this = (this as *mut RawPtr).offset(-1) as *mut Self;
-            (*this).IUnknown_QueryInterface(iid, interface)
-        }
-    }
-
-    extern "system" fn IClosable_AddRef(this: RawPtr) -> u32 {
-        unsafe {
-            let this = (this as *mut RawPtr).offset(-1) as *mut Self;
-            (*this).IUnknown_AddRef()
-        }
-    }
-
-    extern "system" fn IClosable_Release(this: RawPtr) -> u32 {
-        unsafe {
-            let this = (this as *mut RawPtr).offset(-1) as *mut Self;
-            (*this).IUnknown_Release()
-        }
-    }
-
-    extern "system" fn IClosable_Close(this: RawPtr) -> ErrorCode {
-        unsafe {
-            let this = (this as *mut RawPtr).offset(-1) as *mut Self;
-            (*this).inner.close().into()
-        }
-    }
-}
-#[allow(non_camel_case_types)]
-type IUnknown_QueryInterface =
-    extern "system" fn(this: RawPtr, iid: &Guid, interface: *mut RawPtr) -> ErrorCode;
-
-#[allow(non_camel_case_types)]
-type IUnknown_AddRef = extern "system" fn(this: RawPtr) -> u32;
-
-#[allow(non_camel_case_types)]
-type IUnknown_Release = extern "system" fn(this: RawPtr) -> u32;
-
-#[allow(non_camel_case_types)]
-type IInspectable_GetIids =
-    extern "system" fn(this: RawPtr, count: *mut u32, values: *mut *mut Guid) -> ErrorCode;
-#[allow(non_camel_case_types)]
-type IInspectable_GetRuntimeClassName = extern "system" fn(
-    this: RawPtr,
-    value: *mut RawPtr,
-) -> ErrorCode;
-#[allow(non_camel_case_types)]
-type IInspectable_GetTrustLevel = extern "system" fn(this: RawPtr, value: *mut i32) -> ErrorCode;
-
-#[repr(C)]
-pub struct abi_IStringable(
-    IUnknown_QueryInterface,
-    IUnknown_AddRef,
-    IUnknown_Release,
-    IInspectable_GetIids,
-    IInspectable_GetRuntimeClassName,
-    IInspectable_GetTrustLevel,
-    extern "system" fn(
-        this: RawPtr,
-        value: *mut RawPtr,
-    ) -> ErrorCode,
-);
-
-#[repr(C)]
-pub struct abi_IClosable(
-    IUnknown_QueryInterface,
-    IUnknown_AddRef,
-    IUnknown_Release,
-    IInspectable_GetIids,
-    IInspectable_GetRuntimeClassName,
-    IInspectable_GetTrustLevel,
-    extern "system" fn(this: RawPtr) -> ErrorCode,
-);
+// //     fn close(&self) -> Result<()> {
+// //         println!("close: {}", self.0);
+// //         Ok(())
+// //     }
+// // }
