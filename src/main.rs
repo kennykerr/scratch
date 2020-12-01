@@ -11,7 +11,5 @@ fn main() -> Result<()> {
     assert!(root.node_name()? == "html");
     println!("{}", root.inner_text()?);
 
-    println!("{:?}", winrt::build_windows_dir());
-
     Ok(())
 }
