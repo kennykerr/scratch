@@ -6,3 +6,4 @@ edition = "2018"
 [dependencies]
 winrt = { path = "../winrt-rs" }
 bindings = { path = "bindings" }
+winmd = { path = "../winrt-rs/crates/winmd" }

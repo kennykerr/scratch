@@ -11,5 +11,13 @@ fn main() -> Result<()> {
     assert!(root.node_name()? == "html");
     println!("{}", root.inner_text()?);
 
+    let reader = winmd::TypeReader::get();
+
+    let apis = reader.expect_type_def(("Windows.Foundation", "IStringable"));
+
+    let extends = apis.extends();
+
+    println!("{:?}", extends.name());
+
     Ok(())
 }
